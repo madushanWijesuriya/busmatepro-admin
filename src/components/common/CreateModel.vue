@@ -14,7 +14,7 @@
               v-for="input in formInputs"
               :key="input.name"
             >
-              <FormInput :input="input" />
+              <FormInput ref="refFormInput" :input="input" />
             </v-col>
           </v-row>
           <v-row>
@@ -94,8 +94,14 @@ export default {
     },
     getDialog(dialog) {
       this.dialog = dialog;
+      this.resetAllInputs();
+    },
+    resetAllInputs() {
+      this.$refs.refFormInput.forEach((input) => {
+        //clear all inputs
+        input.resetInput();
+      });
     },
   },
-  created() {},
 };
 </script>
