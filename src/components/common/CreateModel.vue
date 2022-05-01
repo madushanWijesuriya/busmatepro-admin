@@ -34,28 +34,24 @@
           :closeButtonName="closeBtnName"
         />
         <div>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="createBus"
-            :disabled="!isLoading ? false : true"
-          >
-            Save
-            <LoadingSpinner :isLoading="isLoading" />
-          </v-btn>
+          <AddButton
+            ref="refAddButton"
+            @AddClick="createBus"
+            :name="SaveBtnName"
+          />
         </div>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 <script>
-import LoadingSpinner from "./LoadingSpinner.vue";
+import AddButton from "./AddButton.vue";
 import CloseButton from "./CloseButton.vue";
 import FormInput from "./FormInput.vue";
 import { addDocument } from "../../assets/firebase/firebase";
 export default {
   components: {
-    LoadingSpinner,
+    AddButton,
     CloseButton,
     FormInput,
   },
@@ -95,6 +91,7 @@ export default {
     },
     async createBus() {
       this.isLoading = true;
+      this.$refs.refAddButton.checkLoading(this.isLoading);
 
       await this.$refs.refFormInput.forEach((input) => {
         this.payload[input._props.input.name] = input.model.value;
@@ -105,11 +102,12 @@ export default {
         "bus",
         () => {
           this.isLoading = false;
+          this.$refs.refAddButton.checkLoading(this.isLoading);
           this.$toast.success("New Bus is added successfuly");
         },
         (error) => {
           this.isLoading = false;
-
+          this.$refs.refAddButton.checkLoading(this.isLoading);
           console.log(error);
           this.$toast.error("Cannot Add new bus");
         }

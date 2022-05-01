@@ -1,20 +1,31 @@
 <template>
   <div>
-    <v-btn color="blue darken-1" text @click="sendPayload">
-      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    <v-btn
+      color="blue darken-1"
+      text
+      @click="$emit('AddClick')"
+      :disabled="!isLoading ? false : true"
+    >
+      <LoadingSpinner :isLoading="isLoading" />
+
       {{ name }}
     </v-btn>
   </div>
 </template>
 <script>
+import LoadingSpinner from "./LoadingSpinner.vue";
+
 export default {
+  components: { LoadingSpinner },
+  data: () => ({
+    isLoading: false,
+  }),
   props: {
     name: null,
-    payload: null,
   },
   methods: {
-    sendPayload() {
-      this.$emit("passPayload", this.payload);
+    checkLoading(isLoading) {
+      this.isLoading = isLoading;
     },
   },
 };
