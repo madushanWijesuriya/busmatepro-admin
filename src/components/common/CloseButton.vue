@@ -13,8 +13,5 @@ export default {
       this.$emit("closeModel", dialog);
     },
   },
-  created() {
-    console.log(this.closeButtonName);
-  },
 };
 </script>

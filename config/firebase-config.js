@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 // TODO: Replace the following with your app's Firebase project configuration
+// See: https://firebase.google.com/docs/web/learn-more#config-object
 const firebaseConfig = {
   apiKey: "AIzaSyB3UqJwcAZT0fQxHGBoSJrXQeLtlWvyQlI",
   authDomain: "busmatesl.firebaseapp.com",
@@ -13,7 +14,8 @@ const firebaseConfig = {
   measurementId: "G-3T19EBY70G",
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-export default db;
+// Initialize Cloud Firestore and get a reference to the service
+export default getFirestore(app);

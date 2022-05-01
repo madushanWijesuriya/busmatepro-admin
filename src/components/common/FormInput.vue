@@ -4,21 +4,21 @@
     ><span :style="styleObject">{{ input.required ? "*" : "" }}</span>
     <v-text-field
       v-if="input.type === 'text'"
-      v-model="model.name"
+      v-model="model.value"
       type="text"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
     ></v-text-field>
     <v-text-field
       v-if="input.type === 'number'"
-      v-model="model.name"
+      v-model="model.value"
       type="number"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
     ></v-text-field>
     <v-select
       v-if="input.type === 'select'"
-      v-model="model.name"
+      v-model="model.value"
       :items="input.options"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
@@ -36,17 +36,14 @@ export default {
         color: "red",
       },
       model: {
-        name: null,
+        value: null,
       },
     };
   },
   methods: {
     resetInput() {
-      this.model.name = null;
+      this.model.value = null;
     },
-  },
-  created() {
-    console.log(this.input.name);
   },
 };
 </script>

@@ -11,7 +11,7 @@
               cols="6"
               sm="6"
               md="6"
-              v-for="input in formInputs"
+              v-for="input in modelInputs"
               :key="input.name"
             >
               <FormInput ref="refFormInput" :input="input" />
@@ -33,57 +33,47 @@
           @closeModel="getDialog($event)"
           :closeButtonName="closeBtnName"
         />
-        <v-btn color="blue darken-1" text @click="dialog = false"> Save </v-btn>
+        <div>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="createBus"
+            :disabled="!isLoading ? false : true"
+          >
+            Save
+            <LoadingSpinner :isLoading="isLoading" />
+          </v-btn>
+        </div>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 <script>
+import LoadingSpinner from "./LoadingSpinner.vue";
 import CloseButton from "./CloseButton.vue";
 import FormInput from "./FormInput.vue";
+import { addDocument } from "../../assets/firebase/firebase";
 export default {
   components: {
+    LoadingSpinner,
     CloseButton,
     FormInput,
   },
   data: () => ({
+    isLoading: false,
     drawer: null,
     dialog: false,
     closeBtnName: "Close",
     SaveBtnName: "Save",
-
-    formInputs: [
-      {
-        type: "text",
-        label: "Bus Number",
-        name: "bus_no",
-        required: true,
-        place_holder: "Enter Bus Registration Number",
-      },
-      {
-        type: "number",
-        label: "No of Seats",
-        name: "available_seats",
-        required: true,
-        place_holder: "Enter Number of Available Seats",
-      },
-      {
-        type: "select",
-        label: "Status",
-        name: "available",
-        required: true,
-        options: ["yes", "no"],
-        place_holder: "Select Status",
-      },
-    ],
     styleObject: {
       color: "red",
     },
+    payload: {},
   }),
   props: {
     modelName: null,
-    modelInputs: {},
-    modelActions: {},
+    modelInputs: null,
+    modelActions: null,
   },
   methods: {
     openModel() {
@@ -96,11 +86,35 @@ export default {
       this.dialog = dialog;
       this.resetAllInputs();
     },
+
     resetAllInputs() {
       this.$refs.refFormInput.forEach((input) => {
         //clear all inputs
         input.resetInput();
       });
+    },
+    async createBus() {
+      this.isLoading = true;
+
+      await this.$refs.refFormInput.forEach((input) => {
+        this.payload[input._props.input.name] = input.model.value;
+      });
+
+      await addDocument(
+        this.payload,
+        "bus",
+        () => {
+          this.isLoading = false;
+          this.$toast.success("New Bus is added successfuly");
+        },
+        (error) => {
+          this.isLoading = false;
+
+          console.log(error);
+          this.$toast.error("Cannot Add new bus");
+        }
+      );
+      this.closeModel();
     },
   },
 };
