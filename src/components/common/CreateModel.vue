@@ -56,6 +56,7 @@ export default {
     FormInput,
   },
   data: () => ({
+    errors: null,
     isLoading: false,
     drawer: null,
     dialog: false,
@@ -89,14 +90,18 @@ export default {
         input.resetInput();
       });
     },
+    payloadValidate(payload) {
+      this.$refs.refAddButton.checkValidation(payload);
+    },
     async createBus() {
       this.isLoading = true;
       this.$refs.refAddButton.checkLoading(this.isLoading);
-
+      //make payload
       await this.$refs.refFormInput.forEach((input) => {
         this.payload[input._props.input.name] = input.model.value;
       });
 
+      //save on firebase
       await addDocument(
         this.payload,
         "bus",

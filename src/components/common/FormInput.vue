@@ -8,6 +8,7 @@
       type="text"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
+      :rules="input.rules ? input.rules : null"
     ></v-text-field>
     <v-text-field
       v-if="input.type === 'number'"
@@ -15,6 +16,7 @@
       type="number"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
+      :rules="input.rules ? input.rules : null"
     ></v-text-field>
     <v-select
       v-if="input.type === 'select'"
@@ -22,6 +24,7 @@
       :items="input.options"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
+      :rules="input.rules ? input.rules : null"
     ></v-select>
   </div>
 </template>
