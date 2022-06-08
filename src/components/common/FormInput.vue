@@ -22,6 +22,8 @@
       v-if="input.type === 'select'"
       v-model="model.value"
       :items="input.options"
+      item-text="state"
+      item-value="abbr"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
       :rules="input.rules ? input.rules : null"

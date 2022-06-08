@@ -21,8 +21,13 @@ export default {
     selectedItem: 1,
     items: [
       { text: "Buses", icon: "mdi-bus", link: "/buses", name: "Buses" },
-      { text: "Routes", icon: "mdi-bus", link: "/routes", name: "Routes" },
-      { text: "Holts", icon: "mdi-bus", link: "/holts", name: "Holts" },
+      {
+        text: "Bus Holts",
+        icon: "mdi-bus-stop",
+        link: "/bus-holts",
+        name: "BusHolt",
+      },
+      { text: "Routes", icon: "mdi-routes", link: "/routes", name: "Routes" },
     ],
   }),
 };

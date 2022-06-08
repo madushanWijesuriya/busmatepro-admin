@@ -3,9 +3,9 @@
     ref="refCreateModel"
     :modelName="formName"
     :modelInputs="formInputs"
-    :docName="'bus'"
-    :successMsg="'New Bus is added successfuly'"
-    :errorMsg="'Cannot Add new bus'"
+    :docName="'bus holts'"
+    :successMsg="'New bus holt is added successfuly'"
+    :errorMsg="'Cannot add new bus holt'"
   />
 </template>
 <script>
@@ -17,14 +17,14 @@ export default {
   },
   data: () => ({
     formAction: {},
-    formName: "Add New Bus",
+    formName: "Add New Bus Holt",
     formInputs: [
       {
         type: "text",
-        label: "Bus Number",
-        name: "bus_no",
+        label: "Bus Holt Name",
+        name: "holt_name",
         required: true,
-        place_holder: "Enter Bus Registration Number",
+        place_holder: "Enter bus holt name",
         rules: [
           (value) => !!value || "Required.",
           (value) => (value || "").length <= 20 || "Max 20 characters",
@@ -36,20 +36,6 @@ export default {
         ],
       },
       {
-        type: "number",
-        label: "No of Seats",
-        name: "available_seats",
-        required: true,
-        place_holder: "Enter Number of Available Seats",
-        rules: [
-          (value) => !!value || "Required.",
-          (value) => (value || "").length <= 2 || "Invalid Number",
-          (value) =>
-            Number.isInteger(Number(value)) ||
-            "The value must be an integer number",
-        ],
-      },
-      {
         type: "select",
         label: "Status",
         name: "available",
@@ -58,6 +44,7 @@ export default {
         place_holder: "Select Status",
         rules: [(value) => !!value || "Required."],
       },
+      
     ],
   }),
   methods: {

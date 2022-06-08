@@ -71,6 +71,9 @@ export default {
     modelName: null,
     modelInputs: null,
     modelActions: null,
+    docName: null,
+    successMsg: null,
+    errorMsg: null,
   },
   methods: {
     openModel() {
@@ -104,20 +107,21 @@ export default {
       //save on firebase
       await addDocument(
         this.payload,
-        "bus",
+        this.docName,
         () => {
           this.isLoading = false;
           this.$refs.refAddButton.checkLoading(this.isLoading);
-          this.$toast.success("New Bus is added successfuly");
+          this.$toast.success(this.successMsg);
         },
         (error) => {
           this.isLoading = false;
           this.$refs.refAddButton.checkLoading(this.isLoading);
           console.log(error);
-          this.$toast.error("Cannot Add new bus");
+          this.$toast.error(this.errorMsg);
         }
       );
       this.closeModel();
+      this.resetAllInputs();
     },
   },
 };
