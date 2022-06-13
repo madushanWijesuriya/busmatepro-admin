@@ -28,3 +28,4 @@ export const getAllDocuments = async (doc, successCallback, errorCallback) => {
     errorCallback(e);
   }
 };
+

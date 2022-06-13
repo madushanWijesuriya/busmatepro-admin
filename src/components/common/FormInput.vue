@@ -1,7 +1,9 @@
 <template>
   <div>
     <label for="checkbox">{{ input.label }} </label
-    ><span :style="styleObject">{{ input.required ? "*" : "" }}</span>
+    ><span v-if="!input.isLogin" :style="styleObject">{{
+      input.required ? "*" : ""
+    }}</span>
     <v-text-field
       v-if="input.type === 'text'"
       v-model="model.value"
@@ -9,6 +11,20 @@
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
       :rules="input.rules ? input.rules : null"
+    ></v-text-field>
+    <v-text-field
+      v-if="input.type === 'password'"
+      v-model="model.value"
+      :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="input.rules ? input.rules : null"
+      :placeholder="input.place_holder ? input.place_holder : null"
+      type="password"
+      :required="input.required ? true : false"
+      :name="input.name"
+      :label="input.lable"
+      :hint="input.hint"
+      counter
+      @click:append="passwordShow = !passwordShow"
     ></v-text-field>
     <v-text-field
       v-if="input.type === 'number'"
@@ -37,6 +53,7 @@ export default {
   },
   data() {
     return {
+      passwordShow: false,
       styleObject: {
         color: "red",
       },

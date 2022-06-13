@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn
-      color="blue darken-1"
+      :color="!color ? color : 'blue darken-1'"
       text
       @click="$emit('AddClick')"
       :disabled="!isLoading ? false : true"
@@ -22,6 +22,7 @@ export default {
   }),
   props: {
     name: null,
+    color: null,
   },
   methods: {
     checkLoading(isLoading) {
