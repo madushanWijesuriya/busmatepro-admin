@@ -37,6 +37,11 @@ const routes = [
     name: "Login",
     component: LoginView,
   },
+  {
+    path: "/logout",
+    name: "Logout",
+    component: null,
+  },
 ];
 const router = new VueRouter({
   mode: "history",
