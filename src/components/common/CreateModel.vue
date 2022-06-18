@@ -36,7 +36,7 @@
         <div>
           <AddButton
             ref="refAddButton"
-            @AddClick="createBus"
+            @AddClick="updateBus"
             :name="SaveBtnName"
           />
         </div>
@@ -48,7 +48,7 @@
 import AddButton from "./AddButton.vue";
 import CloseButton from "./CloseButton.vue";
 import FormInput from "./FormInput.vue";
-import { addDocument } from "../../assets/firebase/firebase";
+import { addDocument, updateDocuments } from "../../assets/firebase/firebase";
 export default {
   components: {
     AddButton,
@@ -74,6 +74,7 @@ export default {
     docName: null,
     successMsg: null,
     errorMsg: null,
+    bus_id: null,
   },
   methods: {
     openModel() {
@@ -96,13 +97,19 @@ export default {
     payloadValidate(payload) {
       this.$refs.refAddButton.checkValidation(payload);
     },
+    makePayload() {
+      console.log(this.$refs.refFormInput);
+      //make payload
+      this.$refs.refFormInput.forEach((input) => {
+        this.payload[input._props.input.name] = input.model.value;
+      });
+    },
     async createBus() {
       this.isLoading = true;
       this.$refs.refAddButton.checkLoading(this.isLoading);
+
       //make payload
-      await this.$refs.refFormInput.forEach((input) => {
-        this.payload[input._props.input.name] = input.model.value;
-      });
+      this.payload = await this.makePayload();
 
       //save on firebase
       await addDocument(
@@ -114,6 +121,37 @@ export default {
           this.$toast.success(this.successMsg);
         },
         (error) => {
+          this.isLoading = false;
+          this.$refs.refAddButton.checkLoading(this.isLoading);
+          console.log(error);
+          this.$toast.error(this.errorMsg);
+        }
+      );
+      this.closeModel();
+      this.resetAllInputs();
+    },
+
+    async updateBus() {
+      this.isLoading = true;
+      this.$refs.refAddButton.checkLoading(this.isLoading);
+
+      //make payload
+      await this.$refs.refFormInput.forEach((input) => {
+        this.payload[input._props.input.name] = input.model.value;
+      });
+      console.log(this.payload);
+      //save on firebase
+      await updateDocuments(
+        this.payload,
+        this.docName,
+        this.bus_id,
+        () => {
+          this.isLoading = false;
+          this.$refs.refAddButton.checkLoading(this.isLoading);
+          this.$toast.success(this.successMsg);
+        },
+        (error) => {
+          console.log(error);
           this.isLoading = false;
           this.$refs.refAddButton.checkLoading(this.isLoading);
           console.log(error);

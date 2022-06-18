@@ -7,7 +7,12 @@
       </v-col>
     </v-row>
     <br />
-    <DataTable :headers="headers" :desserts="desserts" />
+    <DataTable
+      :headers="headers"
+      :desserts="desserts"
+      :columns="columns"
+      :data="data"
+    />
   </v-container>
 </template>
 <script>
@@ -21,7 +26,7 @@ export default {
     dialog: false,
     headers: [
       {
-        text: "Id",
+        text: "Action",
         align: "start",
         sortable: false,
         value: "id",
@@ -36,6 +41,24 @@ export default {
       { text: "Available Seats", value: "available_seats" },
     ],
     desserts: [],
+    columns: ["id", "bus_no", "available", "available_seats"],
+    data: {
+      successMsg: "Success",
+      errorMsg: "Error",
+      docName: "bus",
+      formName: "Assign a Route",
+      formInputs: [
+        {
+          type: "select",
+          label: "Routes",
+          name: "route_id",
+          required: true,
+          options: [],
+          place_holder: "Select Status",
+          rules: [(value) => !!value || "Required."],
+        },
+      ],
+    },
   }),
   methods: {
     addBus() {
@@ -52,10 +75,23 @@ export default {
         }
       );
     },
+    getRoutes() {
+      getAllDocuments(
+        "bus routs",
+        (routes) => {
+          routes.map((x) =>
+            this.data.formInputs[0].options.push({ state: x.name, abbr: x.id })
+          );
+        },
+        (e) => {
+          console.log(e);
+        }
+      );
+    },
   },
   async created() {
-    let x = await this.getBuses();
-    console.log(x, "s");
+    await this.getBuses();
+    await this.getRoutes();
   },
 };
 </script>

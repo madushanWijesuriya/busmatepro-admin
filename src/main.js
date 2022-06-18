@@ -15,6 +15,7 @@ Vue.config.productionTip = false;
 const options = {
   // You can set your default options here
 };
+Vue.prototype.$log = console.log;
 
 Vue.use(Toast, options);
 new Vue({

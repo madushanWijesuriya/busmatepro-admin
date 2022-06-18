@@ -1,6 +1,6 @@
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import db from "../../../config/firebase-config";
-
+import { doc, updateDoc } from "firebase/firestore";
 export const addDocument = async (
   data,
   doc,
@@ -29,3 +29,22 @@ export const getAllDocuments = async (doc, successCallback, errorCallback) => {
   }
 };
 
+export const updateDocuments = async (
+  data,
+  docu,
+  docId,
+
+  successCallback,
+  errorCallback
+) => {
+  try {
+    const washingtonRef = doc(db, docu, docId);
+
+    // Set the "capital" field of the city 'DC'
+    await updateDoc(washingtonRef, data);
+    successCallback(true);
+  } catch (e) {
+    // console.log(e);
+    errorCallback(e);
+  }
+};
