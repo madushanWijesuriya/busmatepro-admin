@@ -10,7 +10,7 @@
       v-if="columns.includes('available') && route == 'Bus'"
       v-slot:[`item.available`]="{ item }"
     >
-      <v-chip :color="setColor(item.available)" dark>
+      <v-chip :color="setColor(item.available)">
         {{ item.available }}
       </v-chip>
     </template>
@@ -28,9 +28,18 @@
         :type="'update'"
         :bus_id="item.id"
       />
+
+      <div v-if="item.available != 'no' && item.available != 'yes'">
+        <ConfirmAlert
+          :id="item.id"
+          :docName="data.docName"
+          :successDelMsg="successDelMsg"
+          @refreshTable="refreshTable"
+        />
+      </div>
       <v-btn
         v-if="item.available == 'no'"
-        color="primary"
+        color="black"
         dark
         @click="assignRoute"
       >
@@ -50,19 +59,34 @@
 </template>
 <script>
 import CreateModel from "./CreateModel.vue";
+import ConfirmAlert from "./ConfirmAlert.vue";
 export default {
-  components: { CreateModel },
-  props: ["desserts", "headers", "isLoading", "columns", "data"],
+  components: { CreateModel, ConfirmAlert },
+  props: [
+    "desserts",
+    "headers",
+    "isLoading",
+    "columns",
+    "data",
+    "successDelMsg",
+    "errorDelMsg",
+  ],
   data: () => ({
     route: "",
   }),
   methods: {
     setColor(status) {
-      if (status == "yes") return "red";
+      if (status == "yes") return "warning";
       else return "green";
     },
     assignRoute() {
       this.$refs.refCreateModel.openModel();
+    },
+    deleteItem(id) {
+      console.log(id);
+    },
+    refreshTable() {
+      this.$emit("refreshTable");
     },
   },
 

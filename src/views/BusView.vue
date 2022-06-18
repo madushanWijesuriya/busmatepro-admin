@@ -12,6 +12,8 @@
       :desserts="desserts"
       :columns="columns"
       :data="data"
+      :successDelMsg="successDelMsg"
+      @refreshTable="refreshTable"
     />
   </v-container>
 </template>
@@ -24,6 +26,7 @@ export default {
   components: { BusCreate, DataTable },
   data: () => ({
     dialog: false,
+    successDelMsg: "Remove Bus Successfully",
     headers: [
       {
         text: "Action",
@@ -87,6 +90,9 @@ export default {
           console.log(e);
         }
       );
+    },
+    async refreshTable() {
+      await this.getBuses();
     },
   },
   async created() {

@@ -3,7 +3,7 @@
     <v-btn
       :color="!color ? color : 'blue darken-1'"
       text
-      @click="$emit('AddClick')"
+      @click="$emit('refreshTable')"
       :disabled="!isLoading ? false : true"
     >
       <LoadingSpinner :isLoading="isLoading" />

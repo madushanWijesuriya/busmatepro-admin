@@ -1,6 +1,13 @@
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import db from "../../../config/firebase-config";
-import { doc, updateDoc } from "firebase/firestore";
+
 export const addDocument = async (
   data,
   doc,
@@ -46,5 +53,21 @@ export const updateDocuments = async (
   } catch (e) {
     // console.log(e);
     errorCallback(e);
+  }
+};
+
+export const deleteDocuments = async (
+  docu,
+  docId,
+  successCallback,
+  errorCallback
+) => {
+  try {
+    console.log(docu, docId);
+    await deleteDoc(doc(db, docu, docId));
+    successCallback();
+  } catch (error) {
+    console.log(error);
+    errorCallback(error);
   }
 };
