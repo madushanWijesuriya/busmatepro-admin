@@ -7,6 +7,7 @@
     <v-text-field
       v-if="input.type === 'text'"
       v-model="model.value"
+      :value="value[input.name]"
       type="text"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
@@ -50,6 +51,7 @@
 export default {
   props: {
     input: Object,
+    value: null,
   },
   data() {
     return {
@@ -66,6 +68,12 @@ export default {
     resetInput() {
       this.model.value = null;
     },
+  },
+  created() {
+    this.item = this.value;
+    this.model.value = this.item[this.input.name]
+      ? this.item[this.input.name]
+      : null;
   },
 };
 </script>

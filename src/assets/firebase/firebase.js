@@ -2,6 +2,7 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   doc,
   updateDoc,
   deleteDoc,
@@ -69,5 +70,17 @@ export const deleteDocuments = async (
   } catch (error) {
     console.log(error);
     errorCallback(error);
+  }
+};
+
+export const getDocumentById = async (docu, docId) => {
+  const docRef = doc(db, docu, docId);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
   }
 };

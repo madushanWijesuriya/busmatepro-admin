@@ -14,7 +14,7 @@
               v-for="input in modelInputs"
               :key="input.name"
             >
-              <FormInput ref="refFormInput" :input="input" />
+              <FormInput ref="refFormInput" :input="input" :value="docItem" />
             </v-col>
           </v-row>
           <v-row>
@@ -35,8 +35,15 @@
         />
         <div>
           <AddButton
+            v-if="type == 'update'"
             ref="refAddButton"
             @AddClick="updateBus"
+            :name="SaveBtnName"
+          />
+          <AddButton
+            v-else
+            ref="refAddButton"
+            @AddClick="createBus"
             :name="SaveBtnName"
           />
         </div>
@@ -74,7 +81,9 @@ export default {
     docName: null,
     successMsg: null,
     errorMsg: null,
-    bus_id: null,
+    id: null,
+    type: null,
+    docItem: null,
   },
   methods: {
     openModel() {
@@ -85,7 +94,7 @@ export default {
     },
     getDialog(dialog) {
       this.dialog = dialog;
-      this.resetAllInputs();
+      if (this.type != "update") this.resetAllInputs();
     },
 
     resetAllInputs() {
@@ -139,12 +148,11 @@ export default {
       await this.$refs.refFormInput.forEach((input) => {
         this.payload[input._props.input.name] = input.model.value;
       });
-      console.log(this.payload);
       //save on firebase
       await updateDocuments(
         this.payload,
         this.docName,
-        this.bus_id,
+        this.id,
         () => {
           this.isLoading = false;
           this.$refs.refAddButton.checkLoading(this.isLoading);
@@ -159,7 +167,7 @@ export default {
         }
       );
       this.closeModel();
-      this.resetAllInputs();
+      this.$emit("refreshTable");
     },
   },
 };
