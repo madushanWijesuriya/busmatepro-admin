@@ -7,16 +7,17 @@
       </v-col>
     </v-row>
     <br />
-    <DataTable :headers="headers" :desserts="desserts" />
+    <RouteTable :headers="headers" :desserts="desserts" :data="data" />
   </v-container>
 </template>
 <script>
 import RouteCreate from "../components/route/RouteCreate.vue";
-import DataTable from "../components/common/DataTable.vue";
+import RouteTable from "../components/route/RouteTable.vue";
+
 import { getAllDocuments } from "../assets/firebase/firebase";
 
 export default {
-  components: { RouteCreate, DataTable },
+  components: { RouteCreate, RouteTable },
   data: () => ({
     dialog: false,
     headers: [
@@ -30,22 +31,69 @@ export default {
         text: "Name",
         align: "start",
         sortable: false,
-        value: "holt_name",
+        value: "name",
+      },
+      {
+        text: "Start",
+        align: "start",
+        sortable: false,
+        value: "start",
+      },
+      {
+        text: "End",
+        align: "start",
+        sortable: false,
+        value: "end",
       },
     ],
     desserts: [],
     items: [],
+    data: {
+      assign_route: {
+        successMsg: "Success",
+        errorMsg: "Error",
+        docName: "bus routs",
+        formName: "Assign a Holts",
+        formInputs: [
+          {
+            type: "select",
+            multiple: true,
+            label: "Bus Holts",
+            name: "holts",
+            required: true,
+            options: [],
+            place_holder: "Select Status",
+            rules: [(value) => !!value || "Required."],
+          },
+        ],
+      },
+    },
   }),
   methods: {
+    getHolts() {
+      getAllDocuments(
+        "bus holts",
+        (routes) => {
+          routes.map((x) =>
+            this.data.assign_route.formInputs[0].options.push({
+              state: x.holt_name,
+              abbr: x.id,
+            })
+          );
+        },
+        (e) => {
+          console.log(e);
+        }
+      );
+    },
     addRec() {
       this.$refs.refCreateBus.openModel();
     },
-    getBuseHolts() {
+    getBuseRoutes() {
       getAllDocuments(
-        "bus holts",
+        "bus routs",
         (item) => {
           this.desserts = item;
-          item.map((x) => this.items.push({ state: x.holt_name, abbr: x.id }));
         },
         (e) => {
           console.log(e);
@@ -54,7 +102,9 @@ export default {
     },
   },
   async created() {
-    await this.getBuseHolts();
+    await this.getBuseRoutes();
+    await this.getHolts();
+    console.log(this.data);
   },
 };
 </script>

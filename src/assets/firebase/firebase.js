@@ -41,7 +41,6 @@ export const updateDocuments = async (
   data,
   docu,
   docId,
-
   successCallback,
   errorCallback
 ) => {

@@ -44,6 +44,7 @@
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
       :rules="input.rules ? input.rules : null"
+      :multiple="input.multiple ? input.multiple : false"
     ></v-select>
   </div>
 </template>

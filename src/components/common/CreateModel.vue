@@ -41,6 +41,12 @@
             :name="SaveBtnName"
           />
           <AddButton
+            v-else-if="type == 'assign'"
+            ref="refAddButton"
+            @AddClick="assignHolts"
+            :name="SaveBtnName"
+          />
+          <AddButton
             v-else
             ref="refAddButton"
             @AddClick="createBus"
@@ -107,11 +113,11 @@ export default {
       this.$refs.refAddButton.checkValidation(payload);
     },
     makePayload() {
-      console.log(this.$refs.refFormInput);
       //make payload
       this.$refs.refFormInput.forEach((input) => {
         this.payload[input._props.input.name] = input.model.value;
       });
+      return this.payload;
     },
     async createBus() {
       this.isLoading = true;
@@ -120,6 +126,9 @@ export default {
       //make payload
       this.payload = await this.makePayload();
 
+      this.payload = await this.payload["holts"].map((x) => "bus holts/" + x);
+
+      console.log(this.payload, this.docName);
       //save on firebase
       await addDocument(
         this.payload,
@@ -138,6 +147,16 @@ export default {
       );
       this.closeModel();
       this.resetAllInputs();
+    },
+
+    async assignHolts() {
+      this.isLoading = true;
+      this.$refs.refAddButton.checkLoading(this.isLoading);
+
+      //make payload
+      this.payload = await this.makePayload();
+
+      console.log(this.payload);
     },
 
     async updateBus() {
@@ -169,6 +188,9 @@ export default {
       this.closeModel();
       this.$emit("refreshTable");
     },
+  },
+  mounted() {
+    console.log(this.type);
   },
 };
 </script>

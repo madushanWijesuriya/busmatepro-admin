@@ -15,6 +15,7 @@
     </v-list>
   </v-card>
 </template>
+
 <script>
 export default {
   data: () => ({
@@ -28,6 +29,12 @@ export default {
         name: "BusHolt",
       },
       { text: "Routes", icon: "mdi-routes", link: "/routes", name: "Routes" },
+      {
+        text: "Drivers",
+        icon: "mdi-account",
+        link: "/drivers",
+        name: "Drivers",
+      },
     ],
   }),
 };
