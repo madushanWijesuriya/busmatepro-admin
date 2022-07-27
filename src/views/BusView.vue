@@ -52,9 +52,10 @@ export default {
       },
       { text: "Available", value: "available" },
       { text: "Available Seats", value: "available_seats" },
+      { text: "Review", value: "review" },
     ],
     desserts: [],
-    columns: ["id", "bus_no", "available", "available_seats"],
+    columns: ["id", "bus_no", "available", "available_seats", "review"],
     data: {
       assign_route: {
         successMsg: "Success",
@@ -137,6 +138,7 @@ export default {
         }
       );
     },
+
     getRoutes() {
       getAllDocuments(
         "bus routs",
@@ -159,6 +161,7 @@ export default {
   },
   async created() {
     await this.getBuses();
+
     await this.getRoutes();
   },
 };

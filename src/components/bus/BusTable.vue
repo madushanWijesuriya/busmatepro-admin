@@ -18,6 +18,7 @@
       v-if="columns.includes('id') && route == 'Bus'"
       v-slot:[`item.id`]="{ item }"
     >
+      <ShowReview :ref="'refReviewModel' + item.id" />
       <!-- route assign -->
       <CreateModel
         :ref="'refUpdateModel' + item.id"
@@ -53,25 +54,43 @@
           @refreshTable="refreshTable"
         />
       </div>
-      <v-btn
-        v-if="item.available == 'no'"
-        color="black"
-        dark
-        @click="assignRoute('refAssignModel' + item.id)"
-      >
-        Assign Route
-      </v-btn>
-      <v-btn color="primary" dark @click="editBus('refUpdateModel' + item.id)">
-        Edit
-      </v-btn>
+
+      <div style="margin-top: 20px">
+        <v-btn
+          v-if="item.available == 'no'"
+          color="black"
+          dark
+          x-small
+          @click="assignRoute('refAssignModel' + item.id)"
+        >
+          Assign Route
+        </v-btn>
+        <v-btn
+          x-small
+          color="primary"
+          dark
+          @click="editBus('refUpdateModel' + item.id)"
+        >
+          Edit
+        </v-btn>
+      </div>
+    </template>
+    <template v-slot:[`item.review`]="{ item }">
+      <RatingCol
+        :item="item"
+        @showReviews="showReviews('refReviewModel' + item.id, item.id)"
+      />
     </template>
   </v-data-table>
 </template>
 <script>
 import CreateModel from "../common/CreateModel.vue";
 import ConfirmAlert from "../common/ConfirmAlert.vue";
+import ShowReview from "../common/ShowReview.vue";
+import RatingCol from "../common/RatingCol.vue";
+
 export default {
-  components: { CreateModel, ConfirmAlert },
+  components: { CreateModel, ConfirmAlert, ShowReview, RatingCol },
   props: [
     "desserts",
     "headers",
@@ -104,11 +123,14 @@ export default {
     checkColumns(columns) {
       return columns.includes(columns);
     },
+    showReviews(refReviewModel, id) {
+      this.$refs[refReviewModel].openModel(id);
+    },
   },
 
   mounted() {
     this.route = this.$route.name;
-    console.log(this.data);
+    console.log(this.desserts);
   },
 };
 </script>

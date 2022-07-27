@@ -6,9 +6,34 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import db from "../../../config/firebase-config";
 
+export const whereDoc = async (
+  doc,
+  col,
+  operator,
+  value,
+  successCallback,
+  errorCallback
+) => {
+  try {
+    let data = [];
+
+    const citiesRef = collection(db, doc);
+    const q = query(citiesRef, where(col, operator, value));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      data.push({ id: doc.id, ...doc.data() });
+    });
+    successCallback(data);
+  } catch (e) {
+    errorCallback(e);
+  }
+};
 export const addDocument = async (
   data,
   doc,
