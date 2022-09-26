@@ -8,6 +8,7 @@ import {
   deleteDoc,
   query,
   where,
+  serverTimestamp,
 } from "firebase/firestore";
 import db from "../../../config/firebase-config";
 
@@ -21,9 +22,39 @@ export const whereDoc = async (
 ) => {
   try {
     let data = [];
-
     const citiesRef = collection(db, doc);
     const q = query(citiesRef, where(col, operator, value));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      data.push({ id: doc.id, ...doc.data() });
+    });
+    successCallback(data);
+  } catch (e) {
+    errorCallback(e);
+  }
+};
+export const whereDateBetween = async (
+  doc,
+  dateOne,
+  dateTwo,
+  successCallback,
+  errorCallback
+) => {
+  try {
+    let start = new Date(dateOne);
+    start.setHours(0, 0, 0, 0);
+
+    let end = new Date(dateTwo);
+    end.setHours(23, 59, 59, 999);
+
+    let data = [];
+    const citiesRef = collection(db, doc);
+    const q = query(
+      citiesRef,
+      where("created_at", ">=", start),
+      where("created_at", "<=", end)
+    );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
@@ -41,7 +72,11 @@ export const addDocument = async (
   errorCallback
 ) => {
   try {
-    const docRef = await addDoc(collection(db, doc), data);
+    const docRef = await addDoc(collection(db, doc), {
+      ...data,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    });
     successCallback(docRef);
   } catch (e) {
     errorCallback(e);
@@ -72,8 +107,12 @@ export const updateDocuments = async (
   try {
     const washingtonRef = doc(db, docu, docId);
 
+    console.log(serverTimestamp());
     // Set the "capital" field of the city 'DC'
-    await updateDoc(washingtonRef, data);
+    await updateDoc(washingtonRef, {
+      ...doc,
+      updated_at: serverTimestamp(),
+    });
     successCallback(true);
   } catch (e) {
     // console.log(e);

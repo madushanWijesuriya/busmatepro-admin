@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto" max-width="300" tile>
     <v-list shaped>
-      <v-subheader>REPORTS</v-subheader>
+      <v-subheader>BUSMATE-SRILANKA</v-subheader>
       <v-list-item-group v-model="selectedItem" color="primary">
         <v-list-item v-for="(item, i) in items" :key="i" :to="item.link">
           <v-list-item-icon>
@@ -34,6 +34,12 @@ export default {
         icon: "mdi-account",
         link: "/drivers",
         name: "Drivers",
+      },
+      {
+        text: "Reports",
+        icon: "mdi-file-chart",
+        link: "/reports",
+        name: "Reports",
       },
     ],
   }),

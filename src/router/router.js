@@ -3,7 +3,9 @@ import VueRouter from "vue-router";
 import BusView from "../views/BusView.vue";
 import LoginView from "../views/LoginView.vue";
 import BusHoltView from "../views/BusHoltView.vue";
+import DriverView from "../views/DriverView.vue";
 import RouteView from "../views/RouteView";
+import ReporstView from "../views/ReportsView";
 import store from "../store";
 Vue.use(VueRouter);
 
@@ -31,6 +33,18 @@ const routes = [
     name: "Route",
     meta: { requiresAuth: true },
     component: RouteView,
+  },
+  {
+    path: "/drivers",
+    name: "Driver",
+    meta: { requiresAuth: true },
+    component: DriverView,
+  },
+  {
+    path: "/reports",
+    name: "Reports",
+    meta: { requiresAuth: true },
+    component: ReporstView,
   },
   {
     path: "/login",

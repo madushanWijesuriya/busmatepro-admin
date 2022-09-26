@@ -126,7 +126,7 @@ export default {
       //make payload
       this.payload = await this.makePayload();
 
-      this.payload = await this.payload["holts"].map((x) => "bus holts/" + x);
+      // this.payload = await this.payload["holts"].map((x) => "bus holts/" + x);
 
       console.log(this.payload, this.docName);
       //save on firebase
@@ -190,7 +190,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.type);
+    console.log(this.modelInputs, "s");
   },
 };
 </script>

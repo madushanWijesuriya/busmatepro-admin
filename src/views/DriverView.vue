@@ -19,7 +19,7 @@ export default {
   }),
   methods: {
     addRec() {
-      this.$refs.refCreateBus.openModel();
+      this.$refs.refCreateDriver.openModel();
     },
   },
 };

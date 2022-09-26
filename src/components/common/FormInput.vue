@@ -7,7 +7,7 @@
     <v-text-field
       v-if="input.type === 'text'"
       v-model="model.value"
-      :value="value[input.name]"
+      :value="value ? value[input.name] : null"
       type="text"
       :required="input.required ? true : false"
       :placeholder="input.place_holder ? input.place_holder : null"
@@ -75,6 +75,9 @@ export default {
     this.model.value = this.item[this.input.name]
       ? this.item[this.input.name]
       : null;
+  },
+  mounted() {
+    console.log(this.value);
   },
 };
 </script>

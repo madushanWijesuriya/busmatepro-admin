@@ -12,12 +12,13 @@
     ></v-rating>
     <h6 style="margin-top: 5px">({{ rating }})</h6>
     <div>
-      <h6
+      <a
+        v-if="rating > 0"
         style="margin-left: 30px; margin-top: 5px; text-decoration: underline"
         @click="$emit('showReviews')"
       >
         see all
-      </h6>
+      </a>
     </div>
   </v-row>
 </template>
@@ -53,7 +54,6 @@ export default {
         }
       );
     },
-    openReview() {},
   },
   async mounted() {
     await this.getBusReviews(this.item.id);
