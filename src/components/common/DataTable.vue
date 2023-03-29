@@ -3,7 +3,7 @@
     <v-data-table
       loading-text="Loading... Please wait"
       :headers="headers"
-      :items="desserts"
+      :items="rows"
       :items-per-page="5"
       class="elevation-1"
     >
@@ -72,6 +72,15 @@
       </template>
     </v-data-table>
   </div>
+  <div v-else-if="route == 'BusHolt'">
+    <BusHoltTable
+      loading-text="Loading... Please wait"
+      :headers="headers"
+      :items="rows"
+      :page="5"
+      class="elevation-1"
+    />
+  </div>
   <div v-else>
     <v-data-table
       loading-text="Loading... Please wait"
@@ -85,8 +94,9 @@
 <script>
 import CreateModel from "./CreateModel.vue";
 import ConfirmAlert from "./ConfirmAlert.vue";
+import BusHoltTable from "../bus-holt/BusHoltTable.vue";
 export default {
-  components: { CreateModel, ConfirmAlert },
+  components: { CreateModel, ConfirmAlert, BusHoltTable },
   props: [
     "desserts",
     "headers",
@@ -99,6 +109,11 @@ export default {
   data: () => ({
     route: "",
   }),
+  computed: {
+    rows() {
+      return this.desserts;
+    },
+  },
   methods: {
     setColor(status) {
       if (status == "yes") return "warning";
@@ -116,14 +131,15 @@ export default {
     refreshTable() {
       this.$emit("refreshTable");
     },
-    checkColumns(columns) {
-      return columns.includes(columns);
+    checkColumns(column) {
+      console.log(this.columns);
+      return this.columns.includes(column);
     },
   },
 
   mounted() {
     this.route = this.$route.name;
-    console.log(this.data);
+    console.log(this.desserts);
   },
 };
 </script>

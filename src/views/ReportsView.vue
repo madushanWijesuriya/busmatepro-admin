@@ -37,8 +37,8 @@ export default {
 
   data: () => ({
     reportName: [
-      "Monthly Passanger Report",
       "Monthly Bus Report",
+      "Monthly Passanger Report",
       "Monthly Review Report",
     ],
     tabs: null,

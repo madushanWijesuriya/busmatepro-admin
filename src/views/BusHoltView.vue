@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="right">
       <v-col>
-        <v-btn color="primary" dark @click="addRec"> Add New Bus </v-btn>
+        <v-btn color="primary" dark @click="addRec"> Add Bus holt</v-btn>
         <BusHoltCreate ref="refCreateBus" />
       </v-col>
     </v-row>
@@ -32,6 +32,19 @@ export default {
         sortable: false,
         value: "holt_name",
       },
+      {
+        text: "Action",
+        align: "center",
+        sortable: false,
+        value: "action",
+        actions: [
+          {
+            name: "view_on_map",
+            column: "location",
+            text: "View on Map",
+          },
+        ],
+      },
     ],
     desserts: [],
   }),
@@ -44,6 +57,12 @@ export default {
         "bus holts",
         (item) => {
           this.desserts = item;
+          this.desserts.map((q) => {
+            return {
+              ...q,
+              view_on_map: true,
+            };
+          });
         },
         (e) => {
           console.log(e);

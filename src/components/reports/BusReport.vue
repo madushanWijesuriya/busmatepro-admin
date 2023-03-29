@@ -24,7 +24,7 @@
             <v-date-picker v-model="dates" range>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-              <v-btn text color="primary" @click="print()"> OK </v-btn>
+              <v-btn text color="primary" @click="filter(dates)"> OK </v-btn>
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -32,8 +32,9 @@
     </template>
     <template>
       <v-data-table
+        :loading="isLoading"
         :headers="headers"
-        :items="desserts"
+        :items="dataset"
         :items-per-page="5"
         class="elevation-1"
       ></v-data-table>
@@ -42,19 +43,62 @@
 </template>
 <script>
 import { whereDateBetween } from "../../assets/firebase/firebase";
+import axios from "axios";
+import { months } from "@/assets/months";
 export default {
   mounted() {
-    // this.getBuses();
+    this.getBusReport();
   },
   computed: {
+    isLoading() {
+      return this.loading;
+    },
+    dataset() {
+      return this.desserts;
+    },
     dateRangeText() {
       return this.dates.join(" ~ ");
     },
   },
   methods: {
-    print() {
-      this.$refs.menu.save(this.dates);
-      this.getBusBetweenDates(this.dates);
+    filter(data) {
+      this.menu = false;
+      this.loading = true;
+      axios
+        .get(
+          "http://localhost:8000/api/bus?filter[created_at]=" +
+            data[0] +
+            " - " +
+            data[1]
+        )
+        .then((response) => {
+          // let res = response.data.data;
+          this.desserts = response.data.data;
+
+          this.desserts.forEach((e) => {
+            e.month = months[e.month];
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.loading = false;
+    },
+    getBusReport() {
+      axios
+        .get("http://localhost:8000/api/bus")
+        .then((response) => {
+          // let res = response.data.data;
+          this.desserts = response.data.data;
+
+          this.desserts.forEach((e) => {
+            e.month = months[e.month];
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.loading = false;
     },
     // getBuses() {
     //   getAllDocuments(
@@ -126,6 +170,7 @@ export default {
       menu: false,
       modal: false,
       menu2: false,
+      loading: true,
       headers: [
         {
           text: "Year",
