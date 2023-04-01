@@ -16,12 +16,12 @@
       </v-tab-item>
       <v-tab-item>
         <v-card flat>
-          <ReviewReport />
+          <PassangerReport />
         </v-card>
       </v-tab-item>
       <v-tab-item>
         <v-card flat>
-          <PassangerReport />
+          <ReviewReport />
         </v-card>
       </v-tab-item>
     </v-tabs-items>

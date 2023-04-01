@@ -14,7 +14,12 @@
               v-for="input in modelInputs"
               :key="input.name"
             >
-              <FormInput ref="refFormInput" :input="input" :value="docItem" />
+              <FormInput
+                ref="refFormInput"
+                :modelValue="input.value"
+                :input="input"
+                :value="docItem"
+              />
             </v-col>
           </v-row>
           <v-row>
@@ -90,6 +95,7 @@ export default {
     id: null,
     type: null,
     docItem: null,
+    additionalPayload: null,
   },
   methods: {
     openModel() {
@@ -112,6 +118,9 @@ export default {
     payloadValidate(payload) {
       this.$refs.refAddButton.checkValidation(payload);
     },
+    decoratePayload(payload) {
+      return { ...payload, ...this.additionalPayload };
+    },
     makePayload() {
       //make payload
       this.$refs.refFormInput.forEach((input) => {
@@ -125,10 +134,9 @@ export default {
 
       //make payload
       this.payload = await this.makePayload();
+      this.payload = await this.decoratePayload(this.payload);
+      console.log(this.payload, "this.payload");
 
-      // this.payload = await this.payload["holts"].map((x) => "bus holts/" + x);
-
-      console.log(this.payload, this.docName);
       //save on firebase
       await addDocument(
         this.payload,

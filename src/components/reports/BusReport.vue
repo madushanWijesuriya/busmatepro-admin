@@ -66,7 +66,7 @@ export default {
       this.loading = true;
       axios
         .get(
-          "http://localhost:8000/api/bus?filter[created_at]=" +
+          "http://localhost:8000/api/getBusReport?filter[created_at]=" +
             data[0] +
             " - " +
             data[1]
@@ -86,7 +86,7 @@ export default {
     },
     getBusReport() {
       axios
-        .get("http://localhost:8000/api/bus")
+        .get("http://localhost:8000/api/getBusReport")
         .then((response) => {
           // let res = response.data.data;
           this.desserts = response.data.data;

@@ -6,6 +6,7 @@
     :docName="'userProfile'"
     :successMsg="'New Driver is added successfuly'"
     :errorMsg="'Cannot Add new bus'"
+    :additionalPayload="{ type: 'driver' }"
   />
 </template>
 <script>
