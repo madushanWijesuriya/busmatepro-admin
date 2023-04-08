@@ -44,7 +44,6 @@ export default {
         place_holder: "Select Status",
         rules: [(value) => !!value || "Required."],
       },
-      
     ],
   }),
   methods: {

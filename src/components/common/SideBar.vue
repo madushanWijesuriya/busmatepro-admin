@@ -21,6 +21,12 @@ export default {
   data: () => ({
     selectedItem: 1,
     items: [
+      {
+        text: "Dashboard",
+        icon: "mdi-chart-bar",
+        link: "/dashboard",
+        name: "Dashboard",
+      },
       { text: "Buses", icon: "mdi-bus", link: "/buses", name: "Buses" },
       {
         text: "Bus Holts",

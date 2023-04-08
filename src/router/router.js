@@ -7,9 +7,16 @@ import DriverView from "../views/DriverView.vue";
 import RouteView from "../views/RouteView";
 import ReporstView from "../views/ReportsView";
 import store from "../store";
+import DashboardView from "../views/DashboardView.vue";
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    meta: { requiresAuth: true },
+    component: DashboardView,
+  },
   {
     path: "/buses",
     name: "Bus",

@@ -11,7 +11,7 @@
               cols="6"
               sm="6"
               md="6"
-              v-for="input in modelInputs"
+              v-for="input in modelInputsList"
               :key="input.name"
             >
               <FormInput
@@ -67,6 +67,7 @@ import AddButton from "./AddButton.vue";
 import CloseButton from "./CloseButton.vue";
 import FormInput from "./FormInput.vue";
 import { addDocument, updateDocuments } from "../../assets/firebase/firebase";
+
 export default {
   components: {
     AddButton,
@@ -84,8 +85,10 @@ export default {
       color: "red",
     },
     payload: {},
+    modelInputsList: [],
   }),
   props: {
+    busOptions: null,
     modelName: null,
     modelInputs: null,
     modelActions: null,
@@ -98,23 +101,14 @@ export default {
     additionalPayload: null,
   },
   methods: {
-    checkValidation(payload) {
-      if (!payload.first_name) {
-        return "First Name is required";
-      } else if (payload.first_name.length > 10) {
-        return "First name can only has 10 characters";
-      } else if (!payload.last_name) {
-        return "Last Name is required";
-      } else if (payload.last_name.length > 10) {
-        return "Last name can only has 10 characters";
-      } else if (!payload.mobile_number) {
-        return "Mobile number is required";
-      } else if (payload.mobile_number.length != 10) {
-        return "Invalid mobile number. Pelase enter a valid number";
-      }
-    },
     openModel() {
       this.dialog = true;
+      this.modelInputsList[3].options = this.busOptions;
+      this.modelInputsList[3].options.forEach((q) => {
+        if (q.abbr === this.docItem.bus_id) {
+          q.selected = true;
+        }
+      });
     },
     closeModel() {
       this.dialog = false;
@@ -151,32 +145,25 @@ export default {
       this.payload = await this.makePayload();
       this.payload = await this.decoratePayload(this.payload);
       console.log(this.payload, "this.payload");
-      let response = this.checkValidation(this.payload);
 
-      if (response) {
-        this.$toast.error(response);
-        this.isLoading = false;
-        this.$refs.refAddButton.checkLoading(this.isLoading);
-      } else {
-        await addDocument(
-          this.payload,
-          this.docName,
-          () => {
-            this.isLoading = false;
-            this.$refs.refAddButton.checkLoading(this.isLoading);
-            this.$toast.success(this.successMsg);
-          },
-          (error) => {
-            this.isLoading = false;
-            this.$refs.refAddButton.checkLoading(this.isLoading);
-            console.log(error);
-            this.$toast.error(this.errorMsg);
-          }
-        );
-        this.closeModel();
-        this.resetAllInputs();
-      }
       //save on firebase
+      await addDocument(
+        this.payload,
+        this.docName,
+        () => {
+          this.isLoading = false;
+          this.$refs.refAddButton.checkLoading(this.isLoading);
+          this.$toast.success(this.successMsg);
+        },
+        (error) => {
+          this.isLoading = false;
+          this.$refs.refAddButton.checkLoading(this.isLoading);
+          console.log(error);
+          this.$toast.error(this.errorMsg);
+        }
+      );
+      this.closeModel();
+      this.resetAllInputs();
     },
 
     async assignHolts() {
@@ -220,7 +207,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.modelInputs, "s");
+    this.modelInputsList = this.modelInputs;
   },
 };
 </script>

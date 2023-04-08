@@ -45,6 +45,7 @@
           :id="item.id"
           @refreshTable="refreshTable"
         />
+
         <!-- edit bus -->
         <div v-if="item.available != 'no' && item.available != 'yes'">
           <ConfirmAlert

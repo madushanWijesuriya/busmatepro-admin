@@ -107,10 +107,9 @@ export const updateDocuments = async (
   try {
     const washingtonRef = doc(db, docu, docId);
 
-    console.log(serverTimestamp());
     // Set the "capital" field of the city 'DC'
     await updateDoc(washingtonRef, {
-      ...doc,
+      ...data,
       updated_at: serverTimestamp(),
     });
     successCallback(true);
