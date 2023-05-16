@@ -54,7 +54,7 @@ export default {
     },
     getBuseHolts() {
       getAllDocuments(
-        "bus holts",
+        "busHolts",
         (item) => {
           this.desserts = item;
           this.desserts.map((q) => {

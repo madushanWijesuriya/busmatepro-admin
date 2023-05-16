@@ -3,7 +3,7 @@
     ref="refCreateModel"
     :modelName="formName"
     :modelInputs="formInputs"
-    :docName="'bus holts'"
+    :docName="'busHolts'"
     :successMsg="'New bus holt is added successfuly'"
     :errorMsg="'Cannot add new bus holt'"
   />

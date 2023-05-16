@@ -2,7 +2,7 @@
   <v-data-table
     loading-text="Loading... Please wait"
     :headers="headers"
-    :items="desserts"
+    :items="getDessertList"
     :items-per-page="5"
     class="elevation-1"
   >
@@ -31,6 +31,7 @@
 </template>
 <script>
 import CreateModel from "../common/CreateModel.vue";
+import { getDocumentById } from "../../assets/firebase/firebase";
 export default {
   components: { CreateModel },
   props: [
@@ -44,8 +45,38 @@ export default {
   ],
   data: () => ({
     route: "",
+    dessertList: null,
   }),
+  computed: {
+    getDessertList() {
+      return this.desserts.map((q) => {
+        return {
+          ...q,
+          end: setTimeout(() => {
+            this.getHoltName(q.end);
+          }, 1000),
+          start: setTimeout(() => {
+            this.getHoltName(q.start);
+          }, 1000),
+        };
+      });
+    },
+  },
   methods: {
+    async getHoltName(id) {
+      let name = null;
+      await getDocumentById(
+        "busHolts",
+        id,
+        (data) => {
+          name = data.data().holt_name;
+        },
+        (e) => {
+          console.log(e);
+        }
+      );
+      return name;
+    },
     setColor(status) {
       if (status == "yes") return "warning";
       else return "green";
@@ -68,6 +99,7 @@ export default {
   },
 
   mounted() {
+    console.log(this.getDessertList, "this.desserts");
     this.route = this.$route.name;
   },
 };

@@ -33,7 +33,7 @@ export default {
   methods: {
     async getBusReviews(bus_id) {
       await whereDoc(
-        "bus review",
+        "busReview",
         "bus_id",
         "==",
         bus_id,

@@ -141,7 +141,7 @@ export default {
 
     getRoutes() {
       getAllDocuments(
-        "bus routs",
+        "busRoutes",
         (routes) => {
           routes.map((x) =>
             this.data.assign_route.formInputs[0].options.push({

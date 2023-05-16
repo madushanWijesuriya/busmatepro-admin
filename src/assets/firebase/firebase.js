@@ -126,7 +126,7 @@ export const deleteDocuments = async (
   errorCallback
 ) => {
   try {
-    console.log(docu, docId);
+    // console.log(docu, docId);
     await deleteDoc(doc(db, docu, docId));
     successCallback();
   } catch (error) {
@@ -135,14 +135,25 @@ export const deleteDocuments = async (
   }
 };
 
-export const getDocumentById = async (docu, docId) => {
-  const docRef = doc(db, docu, docId);
-  const docSnap = await getDoc(docRef);
+export const getDocumentById = async (
+  docu,
+  docId,
+  successCallback,
+  errorCallback
+) => {
+  try {
+    const docRef = doc(db, docu, docId);
+    // console.log(docRef, "docRef");
+    const docSnap = await getDoc(docRef);
 
-  if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
-  } else {
-    // doc.data() will be undefined in this case
-    console.log("No such document!");
+    if (docSnap.exists()) {
+      successCallback(docSnap);
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  } catch (error) {
+    console.log(error);
+    errorCallback(error);
   }
 };

@@ -66,7 +66,7 @@ export default {
       this.loading = true;
       axios
         .get(
-          "http://localhost:8000/api/getBusReport?filter[created_at]=" +
+          "http://localhost:8000/api/getBusReport?filter[fb_created_at]=" +
             data[0] +
             " - " +
             data[1]

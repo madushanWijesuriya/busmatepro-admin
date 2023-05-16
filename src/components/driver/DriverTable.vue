@@ -96,6 +96,7 @@ export default {
   mounted() {
     this.route = this.$route.name;
     this.getBuses();
+    console.log(this.items, "items");
   },
 };
 </script>

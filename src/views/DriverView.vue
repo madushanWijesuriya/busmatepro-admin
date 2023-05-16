@@ -37,7 +37,7 @@ export default {
         text: "Mobile No",
         align: "center",
         sortable: false,
-        value: "mobile_no",
+        value: "mobile_number",
       },
     ],
     data: {
@@ -133,7 +133,7 @@ export default {
             return {
               ...q,
               id: q.id,
-              mobile_no: q.mobile_no ? q.mobile_no : "-",
+              mobile_number: q.mobile_number ? q.mobile_number : "-",
               created_at: q.created_at ? q.created_at : "-",
               name: q.first_name + " " + q.last_name,
             };

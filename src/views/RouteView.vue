@@ -3,7 +3,11 @@
     <v-row justify="right">
       <v-col>
         <v-btn color="primary" dark @click="addRec"> Add New Route </v-btn>
-        <RouteCreate ref="refCreateBus" :cities="items" />
+        <RouteCreate
+          ref="refCreateBus"
+          :cities="items"
+          :holtsOption="holtList"
+        />
       </v-col>
     </v-row>
     <br />
@@ -19,6 +23,7 @@ import { getAllDocuments } from "../assets/firebase/firebase";
 export default {
   components: { RouteCreate, RouteTable },
   data: () => ({
+    holts: [],
     dialog: false,
     headers: [
       {
@@ -33,18 +38,6 @@ export default {
         sortable: false,
         value: "name",
       },
-      {
-        text: "Start",
-        align: "start",
-        sortable: false,
-        value: "start",
-      },
-      {
-        text: "End",
-        align: "start",
-        sortable: false,
-        value: "end",
-      },
     ],
     desserts: [],
     items: [],
@@ -52,13 +45,13 @@ export default {
       assign_route: {
         successMsg: "Success",
         errorMsg: "Error",
-        docName: "bus routs",
+        docName: "busRoutes",
         formName: "Assign a Holts",
         formInputs: [
           {
             type: "select",
             multiple: true,
-            label: "Bus Holts",
+            label: "busHolts",
             name: "holts",
             required: true,
             options: [],
@@ -69,13 +62,18 @@ export default {
       },
     },
   }),
+  computed: {
+    holtList() {
+      return this.holts;
+    },
+  },
   methods: {
     getHolts() {
       getAllDocuments(
-        "bus holts",
+        "busHolts",
         (routes) => {
           routes.map((x) =>
-            this.data.assign_route.formInputs[0].options.push({
+            this.holts.push({
               state: x.holt_name,
               abbr: x.id,
             })
@@ -91,7 +89,7 @@ export default {
     },
     getBuseRoutes() {
       getAllDocuments(
-        "bus routs",
+        "busRoutes",
         (item) => {
           this.desserts = item;
         },
@@ -104,7 +102,6 @@ export default {
   async created() {
     await this.getBuseRoutes();
     await this.getHolts();
-    console.log(this.data);
   },
 };
 </script>

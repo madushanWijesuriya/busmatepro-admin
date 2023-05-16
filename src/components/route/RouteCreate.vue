@@ -3,9 +3,9 @@
     ref="refCreateModel"
     :modelName="formName"
     :modelInputs="formInputs"
-    :docName="'bus routs'"
-    :successMsg="'New bus routes is added successfuly'"
-    :errorMsg="'Cannot add new bus routes'"
+    :docName="'busRoutes'"
+    :successMsg="'New busRoutes is added successfuly'"
+    :errorMsg="'Cannot add new busRoutes'"
   />
 </template>
 <script>
@@ -17,10 +17,11 @@ export default {
   },
   props: {
     cities: null,
+    holtsOption: null,
   },
   data: () => ({
     formAction: {},
-    formName: "Add New Bus Routes",
+    formName: "Add New busRoutes",
     formInputs: [
       {
         type: "text",
@@ -69,11 +70,15 @@ export default {
     },
   },
   async created() {
-    await this.formInputs.forEach((x) => {
-      if (x.is_cities) {
-        x.options = this.cities;
-      }
-    });
+    console.log(this.holtsOption, "this.holtsOption");
+    this.formInputs[1].options = this.holtsOption;
+    this.formInputs[2].options = this.holtsOption;
+    // await this.formInputs.forEach((x) => {
+    //   if (x.is_cities) {
+    //     x.options = this.cities;
+    //   }
+    // });
+    console.log(this.formInputs);
   },
 };
 </script>

@@ -66,7 +66,11 @@
 import AddButton from "./AddButton.vue";
 import CloseButton from "./CloseButton.vue";
 import FormInput from "./FormInput.vue";
-import { addDocument, updateDocuments } from "../../assets/firebase/firebase";
+import {
+  addDocument,
+  updateDocuments,
+  whereDoc,
+} from "../../assets/firebase/firebase";
 export default {
   components: {
     AddButton,
@@ -98,19 +102,44 @@ export default {
     additionalPayload: null,
   },
   methods: {
-    checkValidation(payload) {
-      if (!payload.first_name) {
-        return "First Name is required";
-      } else if (payload.first_name.length > 10) {
-        return "First name can only has 10 characters";
-      } else if (!payload.last_name) {
-        return "Last Name is required";
-      } else if (payload.last_name.length > 10) {
-        return "Last name can only has 10 characters";
-      } else if (!payload.mobile_number) {
-        return "Mobile number is required";
-      } else if (payload.mobile_number.length != 10) {
-        return "Invalid mobile number. Pelase enter a valid number";
+    async checkIfExists(payload, docName) {
+      let searchKey = null;
+      let value = null;
+      let message = "";
+      if (docName == "bus") {
+        searchKey = "bus_no";
+        value = payload.bus_no;
+        message = "Bus number must be unique!";
+      }
+      await whereDoc(
+        docName,
+        searchKey,
+        "==",
+        value,
+        (data) => {
+          if (!data.length > 0) message = null;
+        },
+        (e) => {
+          console.log(e);
+        }
+      );
+      return message;
+    },
+    checkValidation(payload, type) {
+      if (type == "userProfile") {
+        if (!payload.first_name) {
+          return "First Name is required";
+        } else if (payload.first_name.length > 10) {
+          return "First name can only has 10 characters";
+        } else if (!payload.last_name) {
+          return "Last Name is required";
+        } else if (payload.last_name.length > 10) {
+          return "Last name can only has 10 characters";
+        } else if (!payload.mobile_number) {
+          return "Mobile number is required";
+        } else if (payload.mobile_number.length != 10) {
+          return "Invalid mobile number. Pelase enter a valid number";
+        }
       }
     },
     openModel() {
@@ -150,29 +179,36 @@ export default {
       //make payload
       this.payload = await this.makePayload();
       this.payload = await this.decoratePayload(this.payload);
-      console.log(this.payload, "this.payload");
-      let response = this.checkValidation(this.payload);
-
+      let response = this.checkValidation(this.payload, this.docName);
       if (response) {
         this.$toast.error(response);
         this.isLoading = false;
         this.$refs.refAddButton.checkLoading(this.isLoading);
       } else {
-        await addDocument(
-          this.payload,
-          this.docName,
-          () => {
-            this.isLoading = false;
-            this.$refs.refAddButton.checkLoading(this.isLoading);
-            this.$toast.success(this.successMsg);
-          },
-          (error) => {
-            this.isLoading = false;
-            this.$refs.refAddButton.checkLoading(this.isLoading);
-            console.log(error);
-            this.$toast.error(this.errorMsg);
-          }
-        );
+        let message = await this.checkIfExists(this.payload, this.docName);
+
+        if (!message) {
+          await addDocument(
+            this.payload,
+            this.docName,
+            () => {
+              this.isLoading = false;
+              this.$refs.refAddButton.checkLoading(this.isLoading);
+              this.$toast.success(this.successMsg);
+            },
+            (error) => {
+              this.isLoading = false;
+              this.$refs.refAddButton.checkLoading(this.isLoading);
+              console.log(error);
+              this.$toast.error(this.errorMsg);
+            }
+          );
+        } else {
+          this.$toast.error(message);
+          this.isLoading = false;
+          this.$refs.refAddButton.checkLoading(this.isLoading);
+        }
+
         this.closeModel();
         this.resetAllInputs();
       }
@@ -219,8 +255,6 @@ export default {
       this.$emit("refreshTable");
     },
   },
-  mounted() {
-    console.log(this.modelInputs, "s");
-  },
+  mounted() {},
 };
 </script>

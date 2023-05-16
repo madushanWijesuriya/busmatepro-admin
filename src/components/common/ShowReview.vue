@@ -62,7 +62,7 @@ export default {
     },
     async getReviews(id) {
       await whereDoc(
-        "bus review",
+        "busReview",
         "bus_id",
         "==",
         id,
