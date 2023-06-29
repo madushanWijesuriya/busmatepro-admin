@@ -3,13 +3,13 @@
     <v-row justify="right">
       <v-col>
         <v-btn color="primary" dark @click="addBus"> Add New Bus </v-btn>
-        <BusCreate ref="refCreateBus" />
+        <BusCreate ref="refCreateBus" @get-bus-list="getBuses"/>
       </v-col>
     </v-row>
     <br />
     <BusTable
       :headers="headers"
-      :desserts="desserts"
+      :desserts="dessertsList"
       :columns="columns"
       :data="data"
       :successDelMsg="successDelMsg"
@@ -163,6 +163,11 @@ export default {
     await this.getBuses();
 
     await this.getRoutes();
+  },
+  computed: {
+    dessertsList() {
+      return this.desserts;
+    }
   },
 };
 </script>

@@ -5,6 +5,7 @@
       text
       @click="$emit('refreshTable'), $emit('AddClick')"
       :disabled="!isLoading ? false : true"
+      :style="{ color: bgColor}"
     >
       <LoadingSpinner :isLoading="isLoading" />
 
@@ -23,6 +24,7 @@ export default {
   props: {
     name: null,
     color: null,
+    bgColor: null
   },
   methods: {
     checkLoading(isLoading) {

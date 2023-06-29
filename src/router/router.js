@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import BusView from "../views/BusView.vue";
 import LoginView from "../views/LoginView.vue";
+import RegisterView from "../views/RegisterView.vue";
+
 import BusHoltView from "../views/BusHoltView.vue";
 import DriverView from "../views/DriverView.vue";
 import RouteView from "../views/RouteView";
@@ -57,6 +59,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: LoginView,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: RegisterView,
   },
   {
     path: "/logout",

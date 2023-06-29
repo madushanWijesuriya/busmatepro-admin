@@ -1,4 +1,5 @@
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "firebase/auth";
+
 import store from "../../store";
 // import axios from "axios";
 // import router from "../../router/router";
@@ -21,22 +22,32 @@ async function firebaseSignOut() {
     });
 }
 
-export const firebaseLogin = async (email, password) => {
+export const firebaseLogin = async (email, password, successCallback,
+  errorCallback) => {
   const auth = getAuth();
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in'
       store.dispatch("loginUser", userCredential.user);
-      return userCredential.user;
-
-      // ...
+      successCallback(userCredential);
     })
     .catch((error) => {
-      return { code: error.code, message: error.message };
+      errorCallback(error);
     });
-  return true;
 };
 
+export const firebaseRegister = async (email, password, successCallback,
+  errorCallback) => {
+  const auth = getAuth();
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      store.dispatch("loginUser", userCredential.user);
+      successCallback(userCredential);
+    })
+    .catch((error) => {
+      errorCallback(error);
+    });
+}
 // export const Register = async ({ dispatch }, form) => {
 //   await axios.post("register", form);
 //   let UserForm = new FormData();

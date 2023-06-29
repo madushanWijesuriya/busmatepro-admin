@@ -3,11 +3,11 @@
     <v-row justify="right">
       <v-col>
         <v-btn color="primary" dark @click="addRec"> Add Bus holt</v-btn>
-        <BusHoltCreate ref="refCreateBus" />
+        <BusHoltCreate ref="refCreateBus" @get-busHolt-list="getBuseHolts"/>
       </v-col>
     </v-row>
     <br />
-    <DataTable :headers="headers" :desserts="desserts" />
+    <DataTable :headers="headers" :desserts="dessertsList"/>
   </v-container>
 </template>
 <script>
@@ -73,5 +73,10 @@ export default {
   async created() {
     await this.getBuseHolts();
   },
+  computed: {
+    dessertsList() {
+      return this.desserts
+    }
+  }
 };
 </script>

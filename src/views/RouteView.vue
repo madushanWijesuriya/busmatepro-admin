@@ -7,11 +7,12 @@
           ref="refCreateBus"
           :cities="items"
           :holtsOption="holtList"
+          @get-routes-list="getBuseRoutes"
         />
       </v-col>
     </v-row>
     <br />
-    <RouteTable :headers="headers" :desserts="desserts" :data="data" />
+    <RouteTable :headers="headers" :desserts="dessertsList" :data="data" />
   </v-container>
 </template>
 <script>
@@ -63,6 +64,9 @@ export default {
     },
   }),
   computed: {
+    dessertsList(){
+      return this.desserts
+    },
     holtList() {
       return this.holts;
     },

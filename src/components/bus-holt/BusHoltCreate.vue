@@ -1,52 +1,29 @@
 <template>
-  <CreateModel
+  <BusHoltCreateModel
     ref="refCreateModel"
     :modelName="formName"
     :modelInputs="formInputs"
     :docName="'busHolts'"
-    :successMsg="'New bus holt is added successfuly'"
-    :errorMsg="'Cannot add new bus holt'"
+    :successMsg="'Added successfuly'"
+    :errorMsg="'Failed to save'"
+    @get-all-busholts="getBusHolts"
   />
 </template>
 <script>
-import CreateModel from "../common/CreateModel.vue";
+import BusHoltCreateModel from "./BusHoltCreateModel.vue";
 
 export default {
   components: {
-    CreateModel,
+    BusHoltCreateModel,
   },
   data: () => ({
     formAction: {},
-    formName: "Add New Bus Holt",
-    formInputs: [
-      {
-        type: "text",
-        label: "Bus Holt Name",
-        name: "holt_name",
-        required: true,
-        place_holder: "Enter bus holt name",
-        rules: [
-          (value) => !!value || "Required.",
-          (value) => (value || "").length <= 20 || "Max 20 characters",
-          // (value) => {
-          //   const pattern =
-          //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          //   return pattern.test(value) || "Invalid e-mail.";
-          // },
-        ],
-      },
-      {
-        type: "select",
-        label: "Status",
-        name: "available",
-        required: true,
-        options: ["yes", "no"],
-        place_holder: "Select Status",
-        rules: [(value) => !!value || "Required."],
-      },
-    ],
+    
   }),
   methods: {
+    getBusHolts () {
+      this.$emit('get-busHolt-list')
+    },
     openModel() {
       this.$refs.refCreateModel.openModel();
     },

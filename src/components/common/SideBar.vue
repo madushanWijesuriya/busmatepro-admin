@@ -29,7 +29,7 @@ export default {
       },
       { text: "Buses", icon: "mdi-bus", link: "/buses", name: "Buses" },
       {
-        text: "busHolts",
+        text: "Bus Holts",
         icon: "mdi-bus-stop",
         link: "/bus-holts",
         name: "BusHolt",

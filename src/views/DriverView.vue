@@ -3,7 +3,7 @@
     <v-row justify="right">
       <v-col>
         <v-btn color="primary" dark @click="addRec"> Add New Driver </v-btn>
-        <DriverCreate ref="refCreateDriver" />
+        <DriverCreate ref="refCreateDriver" :busesOptions="busesOptions" @get-drivers-list="getDrivers"/>
       </v-col>
     </v-row>
     <br />
@@ -13,7 +13,7 @@
 <script>
 import DriverCreate from "../components/driver/DriverCreate.vue";
 import DriverTable from "../components/driver/DriverTable.vue";
-import { whereDoc } from "../assets/firebase/firebase";
+import { whereDoc, getAllDocuments } from "../assets/firebase/firebase";
 
 export default {
   components: { DriverCreate, DriverTable },
@@ -107,10 +107,12 @@ export default {
         ],
       },
     },
+    busesOptions: []
   }),
 
   mounted() {
     this.getDrivers();
+    this.getBuses();
   },
   computed: {
     dessertsList() {
@@ -120,6 +122,22 @@ export default {
   methods: {
     addRec() {
       this.$refs.refCreateDriver.openModel();
+    },
+    getBuses() {
+      getAllDocuments(
+        "bus",
+        (buses) => {
+          buses.map((x) =>
+          this.busesOptions.push({
+              state: x.bus_no,
+              abbr: x.id,
+            })
+          );
+        },
+        (e) => {
+          console.log(e);
+        }
+      );
     },
     async getDrivers() {
       await whereDoc(
