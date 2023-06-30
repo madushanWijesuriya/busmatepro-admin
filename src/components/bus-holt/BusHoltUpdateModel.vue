@@ -69,7 +69,6 @@
   import CloseButton from "../common/CloseButton.vue";
   import FormInput from "../common/FormInput.vue";
   import {
-    addDocument,
     updateDocuments,
     whereDoc,
   } from "../../assets/firebase/firebase";
@@ -85,12 +84,12 @@
       drawer: null,
       dialog: false,
       closeBtnName: "Close",
-      SaveBtnName: "Save",
+      SaveBtnName: "Update",
       styleObject: {
         color: "red",
       },
       payload: {},
-      modelName: "Add New Bus Holt",
+      modelName: "Edit Bus Holt",
       modelInputs: [
       {
         type: "text",
@@ -205,33 +204,24 @@
             this.isLoading = false;
             this.$refs.refAddButton.checkLoading(this.isLoading);
         } else {
-
-            let message = await this.checkIfExists(this.payload, this.docName);
-            console.log(message, 'message');
-            if(!message.length > 0) {
-                await addDocument(this.payload, this.docName, 
-                (response) => {
-                    console.log(response, 'response');
-                    this.isLoading = false;
-                    this.$refs.refAddButton.checkLoading(this.isLoading);
-                    this.$toast.success(this.successMsg);
-                    this.$emit('get-all-drivers')
-                },
-                (error) => {
-                    this.isLoading = false;
-                    this.$refs.refAddButton.checkLoading(this.isLoading);
-                    console.log(error);
-                    this.$toast.error(this.errorMsg);
-                });
-                this.closeModel();
-                this.resetAllInputs();
-            } else {
+          await updateDocuments(
+            this.payload,
+            this.docName,
+            this.id,
+            () => {
                 this.isLoading = false;
                 this.$refs.refAddButton.checkLoading(this.isLoading);
-                this.modelInputs[0].valid = false
-                this.modelInputs[0].validateMessage = 'name is already used'
-                this.$toast.error('Bus Holt already exists');
+                this.$toast.success(this.successMsg);
+                this.$emit("refreshTable");
+            },
+            (error) => {
+                this.isLoading = false;
+                this.$refs.refAddButton.checkLoading(this.isLoading);
+                console.log(error);
+                this.$toast.error(this.errorMsg);
             }
+          );  
+          this.closeModel();
         }
             
 

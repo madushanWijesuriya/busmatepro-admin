@@ -69,7 +69,6 @@
   import CloseButton from "../common/CloseButton.vue";
   import FormInput from "../common/FormInput.vue";
   import {
-    addDocument,
     updateDocuments,
     whereDoc,
   } from "../../assets/firebase/firebase";
@@ -85,42 +84,58 @@
       drawer: null,
       dialog: false,
       closeBtnName: "Close",
-      SaveBtnName: "Save",
+      SaveBtnName: "Update",
       styleObject: {
         color: "red",
       },
       payload: {},
-      modelName: "Add New Bus Holt",
+      modelName: "Edit New Bus",
       modelInputs: [
       {
-        type: "text",
-        label: "Bus Holt Name",
-        name: "holt_name",
-        required: true,
-        place_holder: "Enter bus holt name",
-        rules: [
-          (value) => !!value || "Required.",
-          (value) => (value || "").length <= 20 || "Max 20 characters",
-          // (value) => {
-          //   const pattern =
-          //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          //   return pattern.test(value) || "Invalid e-mail.";
-          // },
-        ],
-        valid: true,
-        validateMessage: 'This field is required'
-      },
-      {
-        type: "select",
-        label: "Status",
-        name: "available",
-        required: true,
-        options: ["yes", "no"],
-        place_holder: "Select Status",
-        rules: [(value) => !!value || "Required."],
-        valid: true,
-        validateMessage: 'This field is required'
-      },
+            type: "text",
+            label: "Bus Number",
+            name: "bus_no",
+            required: true,
+            place_holder: "Enter Bus Registration Number",
+            rules: [
+              (value) => !!value || "Required.",
+              (value) => (value || "").length <= 20 || "Max 20 characters",
+              // (value) => {
+              //   const pattern =
+              //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+              //   return pattern.test(value) || "Invalid e-mail.";
+              // },
+            ],
+            valid: true,
+            validateMessage: 'This field is required'
+          },
+          {
+            type: "number",
+            label: "No of Seats",
+            name: "available_seats",
+            required: true,
+            place_holder: "Enter Number of Available Seats",
+            rules: [
+              (value) => !!value || "Required.",
+              (value) => (value || "").length <= 2 || "Invalid Number",
+              (value) =>
+                Number.isInteger(Number(value)) ||
+                "The value must be an integer number",
+            ],
+            valid: true,
+            validateMessage: 'This field is required'
+          },
+          {
+            type: "select",
+            label: "Status",
+            name: "available",
+            required: true,
+            options: ["yes", "no"],
+            place_holder: "Select Status",
+            rules: [(value) => !!value || "Required."],
+            valid: true,
+            validateMessage: 'This field is required'
+          },
       ],
     }),
     props: {
@@ -143,9 +158,9 @@
         let value = null 
         await whereDoc(
           docName,
-          'holt_name',
+          'bus_no',
           "==",
-          payload.holt_name,
+          payload.bus_no,
           (data) => {
             value = data;
           },
@@ -156,12 +171,15 @@
       checkValidation(payload) {
         this.modelInputs[0].valid = true
         this.modelInputs[1].valid = true
-        if(payload.holt_name == null ||  payload.holt_name == '') {
-            this.modelInputs[0].validateMessage = 'This field is required'
-            this.modelInputs[0].valid = false
+        this.modelInputs[2].valid = true
+        if(payload.bus_no == null ||  payload.bus_no == ''){
+          this.modelInputs[0].validateMessage = 'This field is required'
+          this.modelInputs[0].valid = false
         }
+        if(payload.available_seats == null ||  payload.available_seats == '')
+            this.modelInputs[1].valid = false
         if(payload.available == null ||  payload.available == '')
-            this.modelInputs[1].valid = false   
+            this.modelInputs[2].valid = false   
       },
       openModel() {
         this.dialog = true;
@@ -171,7 +189,6 @@
       },
       getDialog(dialog) {
         this.dialog = dialog;
-        if (this.type != "update") this.resetAllInputs();
       },
   
       resetAllInputs() {
@@ -205,33 +222,24 @@
             this.isLoading = false;
             this.$refs.refAddButton.checkLoading(this.isLoading);
         } else {
-
-            let message = await this.checkIfExists(this.payload, this.docName);
-            console.log(message, 'message');
-            if(!message.length > 0) {
-                await addDocument(this.payload, this.docName, 
-                (response) => {
-                    console.log(response, 'response');
+              await updateDocuments(
+                this.payload,
+                this.docName,
+                this.id,
+                () => {
                     this.isLoading = false;
                     this.$refs.refAddButton.checkLoading(this.isLoading);
                     this.$toast.success(this.successMsg);
-                    this.$emit('get-all-drivers')
+                    this.$emit("refreshTable");
                 },
                 (error) => {
                     this.isLoading = false;
                     this.$refs.refAddButton.checkLoading(this.isLoading);
                     console.log(error);
                     this.$toast.error(this.errorMsg);
-                });
-                this.closeModel();
-                this.resetAllInputs();
-            } else {
-                this.isLoading = false;
-                this.$refs.refAddButton.checkLoading(this.isLoading);
-                this.modelInputs[0].valid = false
-                this.modelInputs[0].validateMessage = 'name is already used'
-                this.$toast.error('Bus Holt already exists');
-            }
+                }
+              );  
+              this.closeModel();
         }
             
 
@@ -257,44 +265,13 @@
           this.payload[input._props.input.name] = input.model.value;
         });
         //save on firebase
-        await updateDocuments(
-          this.payload,
-          this.docName,
-          this.id,
-          () => {
-            this.isLoading = false;
-            this.$refs.refAddButton.checkLoading(this.isLoading);
-            this.$toast.success(this.successMsg);
-          },
-          (error) => {
-            console.log(error);
-            this.isLoading = false;
-            this.$refs.refAddButton.checkLoading(this.isLoading);
-            console.log(error);
-            this.$toast.error(this.errorMsg);
-          }
-        );
+        
         this.closeModel();
         this.$emit("refreshTable");
       },
     },
-    mounted() {},
+    mounted() {
+    },
   };
   </script>
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

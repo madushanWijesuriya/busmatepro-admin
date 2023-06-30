@@ -2,7 +2,6 @@
   <BusCreateModel
     ref="refCreateModel"
     :modelName="formName"
-    :modelInputs="formInputs"
     :docName="'bus'"
     :successMsg="'Added successfuly'"
     :errorMsg="'Failed to save'"

@@ -1,30 +1,101 @@
 <template>
   <v-data-table
-    loading-text="loading-text"
+    loading-text="Loading... Please wait"
     :headers="headers"
-    :items="items"
-    :items-per-page="page"
+    :items="desserts"
+    :items-per-page="5"
     class="elevation-1"
   >
-    <template v-if="true" v-slot:[`item.action`]="{ item }">
-      <v-btn @click="viewOnMap(item)"> View on Map </v-btn>
+    <template
+      v-if="columns.includes('action')"
+      v-slot:[`item.action`]="{ item }"
+    >
+      <!-- route assign -->
+      <BusHoltUpdateModel
+        :ref="'refUpdateModel' + item.id"
+        :modelName="data.update.formName"
+        :modelInputs="data.update.formInputs"
+        :docName="'busHolts'"
+        :successMsg="'Successfully Updated'"
+        :errorMsg="'Failed to update'"
+        :id="item.id"
+        :docItem="item"
+        @refreshTable="refreshTable"
+      />
+      <!-- edit bus -->
+      <div v-if="item.available != 'no' && item.available != 'yes'">
+        <ConfirmAlert
+          :id="item.id"
+          :docName="data.assign_route.docName"
+          :successDelMsg="successDelMsg"
+          @refreshTable="refreshTable"
+        />
+      </div>
+
+      <div style="margin-top: 20px">
+        <v-btn
+          x-small
+          color="primary"
+          dark
+          @click="editBus('refUpdateModel' + item.id)"
+        >
+          Edit
+        </v-btn>
+      </div>
+    </template>
+    <template v-slot:[`item.review`]="{ item }">
+      <RatingCol
+        :item="item"
+        @showReviews="showReviews('refReviewModel' + item.id, item.id)"
+      />
     </template>
   </v-data-table>
 </template>
 <script>
+import BusHoltUpdateModel from "./BusHoltUpdateModel.vue";
+import ConfirmAlert from "../common/ConfirmAlert.vue";
+import RatingCol from "../common/RatingCol.vue";
+
 export default {
-  components: {},
+  components: { BusHoltUpdateModel , ConfirmAlert, RatingCol },
   props: [
-    "items",
+    "desserts",
     "headers",
     "isLoading",
-    "page",
-    "data",
+    "columns",
     "successDelMsg",
     "errorDelMsg",
   ],
   data: () => ({
     route: "",
+    data: {
+      assign_route: {
+        successMsg: "Success",
+        errorMsg: "Error",
+        docName: "busHolts",
+        formName: "Assign a Route",
+        formInputs: [
+          {
+            type: "select",
+            label: "Routes",
+            name: "route_id",
+            required: true,
+            options: [],
+            place_holder: "Select Status",
+            rules: [(value) => !!value || "Required."],
+          },
+        ],
+      },
+      update: {
+        successMsg: "Successfully Update",
+        errorMsg: "Error",
+        docName: "busHolts",
+        formName: "Update Bus",
+        formInputs: [
+          
+        ],
+      },
+    }
   }),
   methods: {
     setColor(status) {
@@ -43,21 +114,17 @@ export default {
     refreshTable() {
       this.$emit("refreshTable");
     },
-    checkColumns(column) {
-      return this.headers.filter((q) => q.value === column) > 0;
+    checkColumns(columns) {
+      return columns.includes(columns);
     },
-    viewOnMap(row) {
-      console.log(
-        row,
-        JSON.parse(row.location).lat,
-        JSON.parse(row.location).lng
-      );
+    showReviews(refReviewModel, id) {
+      this.$refs[refReviewModel].openModel(id);
     },
   },
 
   mounted() {
     this.route = this.$route.name;
-    console.log(this.items);
+    console.log(this.desserts);
   },
 };
 </script>

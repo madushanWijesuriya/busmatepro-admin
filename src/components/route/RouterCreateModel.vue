@@ -1,7 +1,7 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
-        <v-card-title> {{ isInvalidForm }}
+        <v-card-title> 
           <span class="text-h5">{{ modelName }}</span>
         </v-card-title>
         <v-card-text>

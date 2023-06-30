@@ -7,19 +7,32 @@
       </v-col>
     </v-row>
     <br />
-    <DataTable :headers="headers" :desserts="dessertsList"/>
+    <BusHoltTable
+      :headers="headers"
+      :desserts="dessertsList"
+      :columns="columns"
+      :data="data"
+      :successDelMsg="successDelMsg"
+      @refreshTable="refreshTable"
+    />
   </v-container>
 </template>
 <script>
 import BusHoltCreate from "../components/bus-holt/BusHoltCreate.vue";
-import DataTable from "../components/common/DataTable.vue";
 import { getAllDocuments } from "../assets/firebase/firebase";
+import BusHoltTable from "@/components/bus-holt/BusHoltTable.vue";
 
 export default {
-  components: { BusHoltCreate, DataTable },
+  components: { BusHoltCreate, BusHoltTable },
   data: () => ({
     dialog: false,
     headers: [
+      {
+        text: "Action",
+        align: "start",
+        sortable: false,
+        value: "action",
+      },
       {
         text: "Id",
         align: "start",
@@ -27,28 +40,20 @@ export default {
         value: "id",
       },
       {
-        text: "Name",
+        text: "Holt Name",
         align: "start",
         sortable: false,
         value: "holt_name",
       },
-      {
-        text: "Action",
-        align: "center",
-        sortable: false,
-        value: "action",
-        actions: [
-          {
-            name: "view_on_map",
-            column: "location",
-            text: "View on Map",
-          },
-        ],
-      },
     ],
     desserts: [],
+    columns: ["action", "id", "holt_name"],
+
   }),
   methods: {
+    async refreshTable() {
+      await this.getBuseHolts();
+    },
     addRec() {
       this.$refs.refCreateBus.openModel();
     },
@@ -57,12 +62,12 @@ export default {
         "busHolts",
         (item) => {
           this.desserts = item;
-          this.desserts.map((q) => {
-            return {
-              ...q,
-              view_on_map: true,
-            };
-          });
+          // this.desserts.map((q) => {
+          //   return {
+          //     ...q,
+          //     view_on_map: true,
+          //   };
+          // });
         },
         (e) => {
           console.log(e);

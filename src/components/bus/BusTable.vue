@@ -20,14 +20,13 @@
     >
       <ShowReview :ref="'refReviewModel' + item.id" />
       <!-- route assign -->
-      <CreateModel
+      <BusUpdateModel
         :ref="'refUpdateModel' + item.id"
         :modelName="data.update.formName"
         :modelInputs="data.update.formInputs"
         :docName="data.update.docName"
         :successMsg="data.update.successMsg"
         :errorMsg="data.update.errorMsg"
-        :type="'update'"
         :id="item.id"
         :docItem="item"
         @refreshTable="refreshTable"
@@ -85,23 +84,51 @@
 </template>
 <script>
 import CreateModel from "../common/CreateModel.vue";
+import BusUpdateModel from "./BusUpdateModel.vue";
 import ConfirmAlert from "../common/ConfirmAlert.vue";
 import ShowReview from "../common/ShowReview.vue";
 import RatingCol from "../common/RatingCol.vue";
 
 export default {
-  components: { CreateModel, ConfirmAlert, ShowReview, RatingCol },
+  components: { BusUpdateModel ,CreateModel, ConfirmAlert, ShowReview, RatingCol },
   props: [
     "desserts",
     "headers",
     "isLoading",
     "columns",
-    "data",
     "successDelMsg",
     "errorDelMsg",
   ],
   data: () => ({
     route: "",
+    data: {
+      assign_route: {
+        successMsg: "Success",
+        errorMsg: "Error",
+        docName: "bus",
+        formName: "Assign a Route",
+        formInputs: [
+          {
+            type: "select",
+            label: "Routes",
+            name: "route_id",
+            required: true,
+            options: [],
+            place_holder: "Select Status",
+            rules: [(value) => !!value || "Required."],
+          },
+        ],
+      },
+      update: {
+        successMsg: "Successfully Update",
+        errorMsg: "Error",
+        docName: "bus",
+        formName: "Update Bus",
+        formInputs: [
+          
+        ],
+      },
+    }
   }),
   methods: {
     setColor(status) {

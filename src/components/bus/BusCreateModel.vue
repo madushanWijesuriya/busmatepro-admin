@@ -1,7 +1,7 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
-        <v-card-title> {{ isInvalidForm }}
+        <v-card-title> 
           <span class="text-h5">{{ modelName }}</span>
         </v-card-title>
         <v-card-text>
@@ -173,8 +173,10 @@
         this.modelInputs[0].valid = true
         this.modelInputs[1].valid = true
         this.modelInputs[2].valid = true
-        if(payload.bus_no == null ||  payload.bus_no == '')
-            this.modelInputs[0].valid = false
+        if(payload.bus_no == null ||  payload.bus_no == '') {
+          this.modelInputs[0].validateMessage = 'This field is required'
+          this.modelInputs[0].valid = false
+        }
         if(payload.available_seats == null ||  payload.available_seats == '')
             this.modelInputs[1].valid = false
         if(payload.available == null ||  payload.available == '')
@@ -242,6 +244,12 @@
                 });
                 this.closeModel();
                 this.resetAllInputs();
+            } else {
+                this.isLoading = false;
+                this.$refs.refAddButton.checkLoading(this.isLoading);
+                this.modelInputs[0].valid = false
+                this.modelInputs[0].validateMessage = 'Bus number is already used'
+                this.$toast.error('Bus already exists');
             }
         }
             

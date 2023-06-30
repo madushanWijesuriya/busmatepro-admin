@@ -1,8 +1,6 @@
 <template>
   <BusHoltCreateModel
     ref="refCreateModel"
-    :modelName="formName"
-    :modelInputs="formInputs"
     :docName="'busHolts'"
     :successMsg="'Added successfuly'"
     :errorMsg="'Failed to save'"
