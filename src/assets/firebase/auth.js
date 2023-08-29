@@ -10,11 +10,12 @@ export const LogOut = async ({ commit }) => {
   commit("logout", user);
 };
 
-async function firebaseSignOut() {
+export const firebaseSignOut = async () => {
   const auth = getAuth();
+  console.log();
   signOut(auth)
     .then(() => {
-      // Sign-out successful.
+      console.log('logged out');
     })
     .catch((error) => {
       console.log(error);

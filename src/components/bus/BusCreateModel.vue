@@ -163,7 +163,7 @@
           "==",
           payload.bus_no,
           (data) => {
-            value = data;
+            value = data
           },
           () => {}
         );

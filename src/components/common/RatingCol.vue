@@ -10,7 +10,7 @@
       hover
       size="18"
     ></v-rating>
-    <h6 style="margin-top: 5px">({{ rating }})</h6>
+    <h6 style="margin-top: 5px">({{ rating.toFixed(2) }})</h6>
     <div>
       <a
         v-if="rating > 0"

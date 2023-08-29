@@ -23,22 +23,21 @@ export default {
     headers: [
       {
         text: "Action",
-        align: "center",
         sortable: false,
         value: "id",
       },
       {
         text: "Name",
-        align: "center",
         sortable: false,
         value: "name",
       },
       {
         text: "Mobile No",
-        align: "center",
         sortable: false,
         value: "mobile_number",
       },
+      { text: "Created Date", value: "created_at" },
+      { text: "Updated Date", value: "updated_at" }
     ],
     data: {
       update: {
@@ -146,15 +145,14 @@ export default {
         "==",
         "driver",
         (item) => {
-          this.desserts = item;
-          this.desserts = this.desserts.map((q) => {
+          this.desserts = item.map(q => {
             return {
               ...q,
-              id: q.id,
               mobile_number: q.mobile_number ? q.mobile_number : "-",
-              created_at: q.created_at ? q.created_at : "-",
               name: q.first_name + " " + q.last_name,
-            };
+              created_at: q.created_at ? new Date(q.created_at.toDate()).toDateString() : "-",
+              updated_at: q.updated_at ? new Date(q.updated_at.toDate()).toDateString() : "-",
+            }
           });
         },
         (e) => {

@@ -9,8 +9,27 @@ import {
   query,
   where,
   serverTimestamp,
+  getCountFromServer,
 } from "firebase/firestore";
 import db from "../../../config/firebase-config";
+
+export const whereGetCount = async (
+  doc,
+  col,
+  operator,
+  value,
+  successCallback,
+  errorCallback
+) => {
+  try {
+      const coll = collection(db, doc);
+      const q = query(coll, where(col, operator, value));
+      const snapshot = await getCountFromServer(q);
+    successCallback(snapshot.data().count);
+  } catch (e) {
+    errorCallback(e);
+  }
+};
 
 export const whereDoc = async (
   doc,
@@ -157,3 +176,5 @@ export const getDocumentById = async (
     errorCallback(error);
   }
 };
+
+

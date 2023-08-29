@@ -1,5 +1,6 @@
 <template>
-  <v-card class="mx-auto" max-width="300" tile>
+  <div>
+    <v-card class="mx-auto" max-width="300" tile>
     <v-list shaped>
       <v-subheader>BUSMATE-SRILANKA</v-subheader>
       <v-list-item-group v-model="selectedItem" color="primary">
@@ -13,41 +14,56 @@
         </v-list-item>
       </v-list-item-group>
     </v-list>
+    
+    
   </v-card>
+  <div style="margin-top: 300px;" >
+    <AddButton @AddClick="logout" :name="'Logout'" />
+  </div>
+  </div>
 </template>
 
 <script>
+import AddButton from './AddButton.vue';
+
 export default {
-  data: () => ({
-    selectedItem: 1,
-    items: [
-      {
-        text: "Dashboard",
-        icon: "mdi-chart-bar",
-        link: "/dashboard",
-        name: "Dashboard",
-      },
-      { text: "Buses", icon: "mdi-bus", link: "/buses", name: "Buses" },
-      {
-        text: "Bus Holts",
-        icon: "mdi-bus-stop",
-        link: "/bus-holts",
-        name: "BusHolt",
-      },
-      { text: "Routes", icon: "mdi-routes", link: "/routes", name: "Routes" },
-      {
-        text: "Drivers",
-        icon: "mdi-account",
-        link: "/drivers",
-        name: "Drivers",
-      },
-      {
-        text: "Reports",
-        icon: "mdi-file-chart",
-        link: "/reports",
-        name: "Reports",
-      },
-    ],
-  }),
+    data: () => ({
+        selectedItem: 1,
+        items: [
+            {
+                text: "Dashboard",
+                icon: "mdi-chart-bar",
+                link: "/dashboard",
+                name: "Dashboard",
+            },
+            { text: "Buses", icon: "mdi-bus", link: "/buses", name: "Buses" },
+            {
+                text: "Bus Holts",
+                icon: "mdi-bus-stop",
+                link: "/bus-holts",
+                name: "BusHolt",
+            },
+            { text: "Routes", icon: "mdi-routes", link: "/routes", name: "Routes" },
+            {
+                text: "Drivers",
+                icon: "mdi-account",
+                link: "/drivers",
+                name: "Drivers",
+            },
+            {
+                text: "Reports",
+                icon: "mdi-file-chart",
+                link: "/reports",
+                name: "Reports",
+            },
+        ],
+    }),
+    components: { AddButton },
+
+    methods: {
+      async logout() {
+        
+      }
+    },
 };
 </script>

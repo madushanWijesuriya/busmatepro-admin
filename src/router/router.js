@@ -7,6 +7,7 @@ import RegisterView from "../views/RegisterView.vue";
 import BusHoltView from "../views/BusHoltView.vue";
 import DriverView from "../views/DriverView.vue";
 import RouteView from "../views/RouteView";
+import LogoutForm from "../components/common/LogoutForm.vue"
 import ReporstView from "../views/ReportsView";
 import store from "../store";
 import DashboardView from "../views/DashboardView.vue";
@@ -68,7 +69,7 @@ const routes = [
   {
     path: "/logout",
     name: "Logout",
-    component: null,
+    component: LogoutForm,
   },
 ];
 const router = new VueRouter({

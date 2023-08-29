@@ -28,17 +28,20 @@ export default {
     dialog: false,
     headers: [
       {
-        text: "Id",
+        text: "Action",
         align: "start",
         sortable: false,
         value: "id",
       },
       {
-        text: "Name",
+        text: "Route Name",
         align: "start",
         sortable: false,
         value: "name",
       },
+      { text: "Created Date", value: "created_at" },
+      { text: "Updated Date", value: "updated_at" },
+
     ],
     desserts: [],
     items: [],
@@ -95,7 +98,13 @@ export default {
       getAllDocuments(
         "busRoutes",
         (item) => {
-          this.desserts = item;
+          this.desserts = item.map(element => {
+            return {
+              ...element,
+              created_at: element.created_at ? new Date(element.created_at.toDate()).toDateString() : "-",
+              updated_at: element.updated_at ? new Date(element.updated_at.toDate()).toDateString() : "-",
+            }
+          });
         },
         (e) => {
           console.log(e);

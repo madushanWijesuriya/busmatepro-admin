@@ -7,7 +7,7 @@
     class="elevation-1"
   >
     <template v-slot:[`item.id`]="{ item }">
-      <CreateModel
+      <RouterUpdateModel
         :ref="'refAssignModel' + item.id"
         :modelName="data.assign_route.formName"
         :modelInputs="data.assign_route.formInputs"
@@ -16,6 +16,7 @@
         :errorMsg="data.assign_route.errorMsg"
         :type="'assign'"
         :id="item.id"
+        :docItem="item"
         @refreshTable="refreshTable"
       />
 
@@ -26,14 +27,24 @@
       >
         Assign Holts
       </v-btn>
+      <!-- <div style="margin-top: 20px">
+        <v-btn
+          x-small
+          color="primary"
+          dark
+          @click="editBus('refUpdateModel' + item.id)"
+        >
+          Edit
+        </v-btn>
+      </div> -->
     </template>
   </v-data-table>
 </template>
 <script>
-import CreateModel from "../common/CreateModel.vue";
+import RouterUpdateModel from "./RouterUpdateModel.vue";
 import { getDocumentById } from "../../assets/firebase/firebase";
 export default {
-  components: { CreateModel },
+  components: { RouterUpdateModel },
   props: [
     "desserts",
     "headers",

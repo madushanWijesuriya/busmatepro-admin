@@ -219,7 +219,7 @@
         this.$refs.refAddButton.checkValidation(payload);
       },
       decoratePayload(payload) {
-        return { ...payload, ...this.additionalPayload };
+        return { ...payload, ...this.additionalPayload, holts: [payload.start, payload.end] };
       },
       makePayload() {
         //make payload

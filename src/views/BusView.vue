@@ -53,9 +53,12 @@ export default {
       { text: "Available", value: "available" },
       { text: "Available Seats", value: "available_seats" },
       { text: "Review", value: "review" },
+      { text: "Created Date", value: "created_at" },
+      { text: "Updated Date", value: "updated_at" },
+
     ],
     desserts: [],
-    columns: ["id", "bus_no", "available", "available_seats", "review"],
+    columns: ["id", "bus_no", "available", "available_seats", "review","created_at", "updated_at"],
     data: {
     },
   }),
@@ -67,7 +70,14 @@ export default {
       getAllDocuments(
         "bus",
         (buses) => {
-          this.desserts = buses;
+          this.desserts = buses.map(element => {
+            return {
+              ...element,
+              created_at: element.created_at ? new Date(element.created_at.toDate()).toDateString() : "-",
+              updated_at: element.updated_at ? new Date(element.updated_at.toDate()).toDateString() : "-",
+            }
+          });
+          
         },
         (e) => {
           console.log(e);

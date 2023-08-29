@@ -69,9 +69,11 @@
   import CloseButton from "../common/CloseButton.vue";
   import FormInput from "../common/FormInput.vue";
   import {
+    // getAllDocuments,
     addDocument,
     updateDocuments,
     whereDoc,
+    getAllDocuments
   } from "../../assets/firebase/firebase";
   export default {
     components: {
@@ -81,6 +83,7 @@
     },
     data: () => ({
       errors: null,
+      holts: [],
       isLoading: false,
       drawer: null,
       dialog: false,
@@ -90,17 +93,17 @@
         color: "red",
       },
       payload: {},
-      modelName: "Add New Bus Holt",
+      modelName: "Edit Route",
       modelInputs: [
       {
         type: "text",
-        label: "Bus Holt Name",
-        name: "holt_name",
+        label: "Route Name",
+        name: "name",
         required: true,
-        place_holder: "Enter bus holt name",
+        place_holder: "Enter route name",
         rules: [
           (value) => !!value || "Required.",
-          (value) => (value || "").length <= 20 || "Max 20 characters",
+          (value) => (value || "").length <= 40 || "Max 40 characters",
           // (value) => {
           //   const pattern =
           //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -111,50 +114,25 @@
         validateMessage: 'This field is required'
       },
       {
-        notCol: true,
-        type: "text",
-        label: "Latitude",
-        name: "lat",
-        required: true,
-        place_holder: "Enter bus holt latitude",
-        rules: [
-          (value) => !!value || "Required.",
-          (value) => (value || "").length <= 20 || "Max 20 characters",
-          // (value) => {
-          //   const pattern =
-          //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          //   return pattern.test(value) || "Invalid e-mail.";
-          // },
-        ],
-        valid: true,
-        validateMessage: 'This field is required'
-      },
-      {
-        notCol: true,
-        type: "text",
-        label: "langtitude",
-        name: "lan",
-        required: true,
-        place_holder: "Enter bus holt langtitude",
-        rules: [
-          (value) => !!value || "Required.",
-          (value) => (value || "").length <= 20 || "Max 20 characters",
-          // (value) => {
-          //   const pattern =
-          //     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          //   return pattern.test(value) || "Invalid e-mail.";
-          // },
-        ],
-        valid: true,
-        validateMessage: 'This field is required'
-      },
-      {
+        is_cities: true,
         type: "select",
-        label: "Status",
-        name: "available",
+        label: "Start Holt",
+        name: "start",
         required: true,
-        options: ["yes", "no"],
-        place_holder: "Select Status",
+        options: null,
+        place_holder: "Please enter start holt of route",
+        rules: [(value) => !!value || "Required."],
+        valid: true,
+          validateMessage: 'This field is required'
+      },
+      {
+        is_cities: true,
+        type: "select",
+        label: "End Holt",
+        name: "end",
+        required: true,
+        options: null,
+        place_holder: "Please enter last holt of route",
         rules: [(value) => !!value || "Required."],
         valid: true,
         validateMessage: 'This field is required'
@@ -170,6 +148,7 @@
       type: null,
       docItem: null,
       additionalPayload: null,
+      holtsOption: null
     },
     computed: {
         isInvalidForm() {
@@ -177,13 +156,29 @@
         }
     },
     methods: {
+    async getHolts() {
+        await getAllDocuments(
+            "busHolts",
+            (routes) => {
+                routes.map((x) =>
+                this.holts.push({
+                    state: x.holt_name,
+                    abbr: x.id,
+                })
+                );
+            },
+            (e) => {
+                console.log(e);
+            }
+        )
+    },
       async checkIfExists(payload, docName) {
         let value = null 
         await whereDoc(
           docName,
-          'holt_name',
+          'name',
           "==",
-          payload.holt_name,
+          payload.name,
           (data) => {
             value = data;
           },
@@ -194,12 +189,14 @@
       checkValidation(payload) {
         this.modelInputs[0].valid = true
         this.modelInputs[1].valid = true
-        if(payload.holt_name == null ||  payload.holt_name == '') {
-            this.modelInputs[0].validateMessage = 'This field is required'
+        this.modelInputs[2].valid = true
+        if(payload.name == null ||  payload.name == '')
             this.modelInputs[0].valid = false
-        }
-        if(payload.available == null ||  payload.available == '')
-            this.modelInputs[1].valid = false   
+            this.modelInputs[0].validateMessage = 'This field is required'
+        if(payload.start == null ||  payload.start == '')
+            this.modelInputs[1].valid = false
+        if(payload.end == null ||  payload.end == '')
+            this.modelInputs[2].valid = false   
       },
       openModel() {
         this.dialog = true;
@@ -222,13 +219,12 @@
         this.$refs.refAddButton.checkValidation(payload);
       },
       decoratePayload(payload) {
-        return { ...payload, ...this.additionalPayload, location: `{"lat": ${this.payload.lat}", "lng": ${this.payload.lan}}` };
+        return { ...payload, ...this.additionalPayload };
       },
       makePayload() {
         //make payload
         this.$refs.refFormInput.forEach((input) => {
-          if(!input.notCol)
-            this.payload[input._props.input.name] = input.model.value;
+          this.payload[input._props.input.name] = input.model.value;
         });
         return this.payload;
       },
@@ -254,7 +250,7 @@
                     this.isLoading = false;
                     this.$refs.refAddButton.checkLoading(this.isLoading);
                     this.$toast.success(this.successMsg);
-                    this.$emit('get-all-drivers')
+                    this.$emit('get-all-routes')
                 },
                 (error) => {
                     this.isLoading = false;
@@ -268,8 +264,9 @@
                 this.isLoading = false;
                 this.$refs.refAddButton.checkLoading(this.isLoading);
                 this.modelInputs[0].valid = false
-                this.modelInputs[0].validateMessage = 'name is already used'
-                this.$toast.error('Bus Holt already exists');
+                this.modelInputs[0].validateMessage = 'This name is already used'
+                this.$toast.error('Route already exists');
+
             }
         }
             
@@ -317,23 +314,11 @@
         this.$emit("refreshTable");
       },
     },
-    mounted() {},
+    mounted () {
+        this.modelInputs[1].options = this.holtsOption
+        this.modelInputs[2].options = this.holtsOption
+
+    }
   };
   </script>
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

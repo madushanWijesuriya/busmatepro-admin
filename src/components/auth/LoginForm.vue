@@ -10,7 +10,7 @@
       <AddButton ref="refAddButton" @AddClick="login" :name="submitBtnName" />
     </v-col>
     <v-col>
-      <AddButton :bgColor="'blue'" ref="refAddButton" @AddClick="register" :name="regBtnName" />
+      <!-- <AddButton :bgColor="'blue'" ref="refAddButton" @AddClick="register" :name="regBtnName" /> -->
     </v-col>
     </v-row>
   </v-container>
